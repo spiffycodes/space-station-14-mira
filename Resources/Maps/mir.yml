@@ -62263,14 +62263,6 @@ entities:
     - type: Transform
       pos: 50.614075,10.725533
       parent: 2
-- proto: Pen
-  entities:
-  - uid: 11949
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -53.236153,5.1837587
-      parent: 2
 - proto: PersonalAI
   entities:
   - uid: 2924
