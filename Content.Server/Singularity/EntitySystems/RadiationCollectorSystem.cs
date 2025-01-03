@@ -30,7 +30,7 @@ public sealed class RadiationCollectorSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<RadiationCollectorComponent, InteractHandEvent>(OnInteractHand);
+        SubscribeLocalEvent<RadiationCollectorComponent, ActivateInWorldEvent>(OnActivate);
         SubscribeLocalEvent<RadiationCollectorComponent, OnIrradiatedEvent>(OnRadiation);
         SubscribeLocalEvent<RadiationCollectorComponent, ExaminedEvent>(OnExamined);
         SubscribeLocalEvent<RadiationCollectorComponent, GasAnalyzerScanEvent>(OnAnalyzed);
@@ -65,7 +65,7 @@ public sealed class RadiationCollectorSystem : EntitySystem
         UpdateTankAppearance(uid, component, gasTank);
     }
 
-    private void OnInteractHand(EntityUid uid, RadiationCollectorComponent component, InteractHandEvent args)
+    private void OnActivate(EntityUid uid, RadiationCollectorComponent component, ActivateInWorldEvent args)
     {
         if (TryComp(uid, out UseDelayComponent? useDelay) && !_useDelay.TryResetDelay((uid, useDelay), true))
             return;
@@ -222,6 +222,13 @@ public sealed class RadiationCollectorSystem : EntitySystem
     {
         if (!Resolve(uid, ref appearance, false))
             return;
+
+        var state = RadiationCollectorVisualState.Deactive;
+
+        if (component.Enabled)
+            state = RadiationCollectorVisualState.Active;
+
+        _appearance.SetData(uid, RadiationCollectorVisuals.VisualState, state, appearance);
 
         _appearance.SetData(uid, RadiationCollectorVisuals.TankInserted, gasTank != null, appearance);
 

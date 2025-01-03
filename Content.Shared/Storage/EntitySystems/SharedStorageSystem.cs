@@ -14,6 +14,7 @@ using Content.Shared.Input;
 using Content.Shared.Interaction;
 using Content.Shared.Interaction.Components;
 using Content.Shared.Inventory;
+using Content.Shared.Inventory.Events;
 using Content.Shared.Item;
 using Content.Shared.Lock;
 using Content.Shared.Materials;
@@ -123,6 +124,9 @@ public abstract class SharedStorageSystem : EntitySystem
         SubscribeLocalEvent<StorageComponent, EntInsertedIntoContainerMessage>(OnEntInserted);
         SubscribeLocalEvent<StorageComponent, EntRemovedFromContainerMessage>(OnEntRemoved);
         SubscribeLocalEvent<StorageComponent, ContainerIsInsertingAttemptEvent>(OnInsertAttempt);
+
+        SubscribeLocalEvent<StorageComponent, GotEquippedEvent>(OnEquipped);
+        SubscribeLocalEvent<StorageComponent, GotUnequippedEvent>(OnUnequipped);
 
         SubscribeLocalEvent<StorageComponent, AreaPickupDoAfterEvent>(OnDoAfter);
 
@@ -320,7 +324,9 @@ public abstract class SharedStorageSystem : EntitySystem
         if (!silent)
         {
             if (!_ui.IsUiOpen(uid, StorageComponent.StorageUiKey.Key))
+            {
                 Audio.PlayPredicted(storageComp.StorageOpenSound, uid, entity);
+            }
 
             if (useDelay != null)
                 UseDelay.TryResetDelay((uid, useDelay), id: OpenUiUseDelayID);
@@ -362,7 +368,7 @@ public abstract class SharedStorageSystem : EntitySystem
     /// <returns>true if inserted, false otherwise</returns>
     private void OnInteractUsing(EntityUid uid, StorageComponent storageComp, InteractUsingEvent args)
     {
-        if (args.Handled || !CanInteract(args.User, (uid, storageComp), storageComp.ClickInsert, false))
+        if (args.Handled || !storageComp.ClickInsert || !CanInteract(args.User, (uid, storageComp), silent: false))
             return;
 
         var attemptEv = new StorageInteractUsingAttemptEvent();
@@ -382,7 +388,7 @@ public abstract class SharedStorageSystem : EntitySystem
     /// </summary>
     private void OnActivate(EntityUid uid, StorageComponent storageComp, ActivateInWorldEvent args)
     {
-        if (args.Handled || !args.Complex || !CanInteract(args.User, (uid, storageComp)))
+        if (args.Handled || !args.Complex || !storageComp.OpenOnActivate || !CanInteract(args.User, (uid, storageComp)))
             return;
 
         // Toggle
@@ -651,6 +657,9 @@ public abstract class SharedStorageSystem : EntitySystem
             $"{ToPrettyString(player):player} is removing {ToPrettyString(item):item} from {ToPrettyString(storage):storage}");
         TransformSystem.DropNextTo(item.Owner, player.Owner);
         Audio.PlayPredicted(storage.Comp.StorageRemoveSound, storage, player, _audioParams);
+
+        var ev = new StorageRemovedItemEvent(player, storage);
+        RaiseLocalEvent(item, ref ev);
     }
 
     private void OnInsertItemIntoLocation(StorageInsertItemIntoLocationEvent msg, EntitySessionEventArgs args)
@@ -737,6 +746,18 @@ public abstract class SharedStorageSystem : EntitySystem
 
             args.Cancel();
         }
+    }
+
+    private void OnEquipped(EntityUid uid, StorageComponent component, GotEquippedEvent args)
+    {
+        component.CanAnimate = component.Animations;
+        Dirty(uid, component);
+    }
+
+    private void OnUnequipped(EntityUid uid, StorageComponent component, GotUnequippedEvent args)
+    {
+        component.CanAnimate = false;
+        Dirty(uid, component);
     }
 
     public void UpdateAppearance(Entity<StorageComponent?, AppearanceComponent?> entity)

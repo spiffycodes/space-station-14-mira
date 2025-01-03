@@ -296,6 +296,8 @@
     checkCanInteract: false
     checkConsciousness: false
     event: !type:WakeActionEvent
+    startDelay: true
+    useDelay: 2
 
 - type: entity
   id: ActionActivateHonkImplant
@@ -381,3 +383,11 @@
   - type: InstantAction
     icon: { sprite: Interface/Actions/zone_sel.rsi , state: torso }
     event: !type:DamageSelectorActionEvent
+
+- type: entity
+  id: ActionInstrument
+  name: Play Music
+  description: Play your sick dubstep.
+  components:
+  - type: InstantAction
+    event: !type:InstrumentActionEvent

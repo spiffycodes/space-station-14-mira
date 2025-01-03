@@ -37,7 +37,6 @@
     collection: FootstepPlating
   friction: 0.3
   heatCapacity: 10000
-  deconstructTools: [ Plating ]
 
 - type: tile
   id: PlatingAsteroid

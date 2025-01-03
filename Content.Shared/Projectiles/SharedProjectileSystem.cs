@@ -6,6 +6,7 @@ using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Throwing;
+using Content.Shared.Whitelist;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Network;
@@ -28,6 +29,7 @@ public abstract partial class SharedProjectileSystem : EntitySystem
     [Dependency] private readonly SharedHandsSystem _hands = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private readonly EntityWhitelistSystem _whitelist = default!;
 
     public override void Initialize()
     {
@@ -71,6 +73,8 @@ public abstract partial class SharedProjectileSystem : EntitySystem
         TryComp<PhysicsComponent>(uid, out var physics);
         _physics.SetBodyType(uid, BodyType.Dynamic, body: physics, xform: xform);
         _transform.AttachToGridOrMap(uid, xform);
+        component.EmbeddedIntoUid = null;
+        Dirty(uid, component);
 
         // Reset whether the projectile has damaged anything if it successfully was removed
         if (TryComp<ProjectileComponent>(uid, out var projectile))
@@ -94,11 +98,17 @@ public abstract partial class SharedProjectileSystem : EntitySystem
         if (!component.EmbedOnThrow)
             return;
 
+        if (_whitelist.IsWhitelistFail(component.Whitelist, args.Target))
+            return;
+
         Embed(uid, args.Target, null, component);
     }
 
     private void OnEmbedProjectileHit(EntityUid uid, EmbeddableProjectileComponent component, ref ProjectileHitEvent args)
     {
+        if (_whitelist.IsWhitelistFail(component.Whitelist, args.Target))
+            return;
+
         Embed(uid, args.Target, args.Shooter, component);
 
         // Raise a specific event for projectiles.
@@ -127,8 +137,10 @@ public abstract partial class SharedProjectileSystem : EntitySystem
         }
 
         _audio.PlayPredicted(component.Sound, uid, null);
+        component.EmbeddedIntoUid = target;
         var ev = new EmbedEvent(user, target);
         RaiseLocalEvent(uid, ref ev);
+        Dirty(uid, component);
     }
 
     private void PreventCollision(EntityUid uid, ProjectileComponent component, ref PreventCollideEvent args)

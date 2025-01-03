@@ -5,6 +5,8 @@ namespace Content.Shared.Electrocution
 {
     public abstract class SharedElectrocutionSystem : EntitySystem
     {
+        [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
+
         public override void Initialize()
         {
             base.Initialize();
@@ -26,7 +28,7 @@ namespace Content.Shared.Electrocution
         /// <summary>
         /// Sets electrified value of component and marks dirty if required.
         /// </summary>
-        public void SetElectrified(Entity<ElectrifiedComponent> ent, bool value)
+        public void SetElectrified(Entity<SharedElectrifiedComponent> ent, bool value)
         {
             if (ent.Comp.Enabled == value)
             {
@@ -35,6 +37,8 @@ namespace Content.Shared.Electrocution
 
             ent.Comp.Enabled = value;
             Dirty(ent, ent.Comp);
+
+            _appearance.SetData(ent.Owner, ElectrifiedVisuals.IsElectrified, value);
         }
 
         /// <param name="uid">Entity being electrocuted.</param>

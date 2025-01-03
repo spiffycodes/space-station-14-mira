@@ -16,6 +16,14 @@
     soundHit:
       collection: MetalThud
   - type: CombatMode
+  - type: DamagePartSelector
+    selectableParts:
+      !type:BodyPart { type: Head, side: None }: { sprite: Interface/Actions/zone_sel.rsi, state: head }
+      !type:BodyPart { type: Arm, side: Left }: { sprite: Interface/Actions/zone_sel.rsi, state: larm }
+      !type:BodyPart { type: Leg, side: Left }: { sprite: Interface/Actions/zone_sel.rsi, state: lleg }
+      !type:BodyPart { type: Torso, side: None }: { sprite: Interface/Actions/zone_sel.rsi, state: torso }
+      !type:BodyPart { type: Leg, side: Right }: { sprite: Interface/Actions/zone_sel.rsi, state: rleg }
+      !type:BodyPart { type: Arm, side: Right }: { sprite: Interface/Actions/zone_sel.rsi, state: rarm }
   - type: NoSlip
   - type: StaticPrice
     price: 1250
@@ -69,6 +77,11 @@
         type: BorgBoundUserInterface
       enum.StrippingUiKey.Key:
         type: StrippableBoundUserInterface
+      enum.DamageSelectorUiKey.Key:
+        type: DamageSelectorBoundUserInterface
+      # Only used for NT borgs that can switch type, defined here to avoid copy-pasting the rest of this component.
+      enum.BorgSwitchableTypeUiKey.SelectBorgType:
+        type: BorgSelectTypeUserInterface
   - type: ActivatableUI
     key: enum.BorgUiKey.Key
   - type: SiliconLawBound
@@ -158,6 +171,7 @@
       collection: FootstepBorg
   - type: Construction
     graph: Cyborg
+    node: cyborg
     containers:
     - part-container
     - cell_slot
@@ -287,6 +301,9 @@
   parent: [BaseBorgChassis, BaseBorgTransponder]
   abstract: true
   components:
+  - type: RandomMetadata
+    nameSegments:
+      - names_borg
   - type: NpcFactionMember
     factions:
     - NanoTrasen
@@ -306,6 +323,10 @@
         type: GeneralStationRecordConsoleBoundUserInterface
       enum.StrippingUiKey.Key:
         type: StrippableBoundUserInterface
+      enum.DamageSelectorUiKey.Key:
+        type: DamageSelectorBoundUserInterface
+      enum.BorgSwitchableTypeUiKey.SelectBorgType:
+        type: BorgSelectTypeUserInterface
   - type: ActivatableUI
     key: enum.BorgUiKey.Key
   - type: IntrinsicUI
@@ -314,13 +335,15 @@
         toggleAction: ActionAGhostShowStationRecords
   - type: GeneralStationRecordConsole
   - type: ShowJobIcons
-  - type: ShowMindShieldIcons
   - type: StatusIcon
   - type: IdCard
     accessOverride: false
     updateName: false
   - type: PresetIdCard
     job: Borg
+  - type: InteractionPopup
+    interactSuccessSound:
+      path: /Audio/Ambience/Objects/periodic_beep.ogg
 
 - type: entity
   id: BaseBorgChassisSyndicate
@@ -355,3 +378,23 @@
       Unsexed: UnisexSiliconSyndicate
   - type: PointLight
     color: "#dd200b"
+
+- type: entity
+  id: BaseBorgChassisDerelict
+  parent: BaseBorgChassis
+  abstract: true
+  components:
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen #The seemingly best fit. It was a regular NT cyborg once, after all.
+  - type: Access
+    enabled: false
+    groups:
+    - AllAccess #Randomized access would be fun. AllAccess is the best i can think of right now that does make it too hard for it to enter the station or navigate it..
+  - type: AccessReader
+    access: [["Command"], ["Research"]]
+  - type: StartIonStormed
+    ionStormAmount: 3
+  - type: IonStormTarget
+    chance: 1
+  - type: ShowJobIcons

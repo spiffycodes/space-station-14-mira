@@ -17,9 +17,6 @@
   - type: Body
     prototype: Diona
     requiredLegs: 2
-  - type: Damageable
-    damageContainer: Biological
-    damageModifierSet: Diona
   - type: DamageVisuals
     damageOverlayGroups:
       Brute:
@@ -86,6 +83,18 @@
           - MobLayer
   - type: Speech
     speechVerb: Plant
+    allowedEmotes: ['Chirp']
+  - type: Absorbent
+    solutionName: chemicals
+    pickupAmmount: 5
+    alwaysPickup: true
+    animation: false
+    pickupSound: null
+    transferSound: null
+  - type: AbsorbentToggle
+    toggleActionId: null
+    enabled: true
+    canSlip: false
   - type: Vocal
     sounds:
       Male: UnisexDiona

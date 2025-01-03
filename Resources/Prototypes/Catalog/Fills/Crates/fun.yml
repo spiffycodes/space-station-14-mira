@@ -16,6 +16,8 @@
         weight: 9
       - id: PlushieSpaceLizard
         weight: 1
+      - id: PlushieLizardInversed
+        weight: 0.5
     - !type:GroupSelector
       children:
       - id: PlushieCarp
@@ -387,3 +389,16 @@
     contents:
       - id: VehicleATV
       - id: VehicleKeyATV
+
+- type: entity
+  id: CrateFunSantaSuit
+  parent: CratePlastic
+  name: santa suit crate
+  description: 3 standard issue security santa suit's to spread the festive joy.
+  components:
+  - type: StorageFill
+    contents:
+      - id: ClothingHeadHatSantahat
+        amount: 3
+      - id: ClothingOuterSanta
+        amount: 3

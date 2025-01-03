@@ -1,5 +1,6 @@
 - type: entity
   categories: [ HideSpawnMenu ]
+  parent: BaseElectrified
   id: BaseAPC
   name: APC
   description: A control terminal for the area's electrical systems.
@@ -91,7 +92,6 @@
         type: ApcBoundUserInterface
   - type: ActivatableUI
     inHandsOnly: false
-    singleUser: true
     key: enum.ApcUiKey.Key
   - type: Construction
     graph: APC

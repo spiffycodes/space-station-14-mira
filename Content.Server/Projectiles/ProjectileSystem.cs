@@ -51,11 +51,12 @@ public sealed class ProjectileSystem : SharedProjectileSystem
             return;
         }
 
+        component.DamagedEntity = true;
+
         var ev = new ProjectileHitEvent(component.Damage, target, component.Shooter);
         RaiseLocalEvent(uid, ref ev);
 
         var otherName = ToPrettyString(target);
-        var direction = args.OurBody.LinearVelocity.Normalized();
         var modifiedDamage = _damageableSystem.TryChangeDamage(target, ev.Damage, component.IgnoreResistances, origin: component.Shooter);
         var deleted = Deleted(target);
 
@@ -74,10 +75,10 @@ public sealed class ProjectileSystem : SharedProjectileSystem
         if (!deleted)
         {
             _guns.PlayImpactSound(target, modifiedDamage, component.SoundHit, component.ForceSound);
-            _sharedCameraRecoil.KickCamera(target, direction);
-        }
 
-        component.DamagedEntity = true;
+            if (!args.OurBody.LinearVelocity.IsLengthZero())
+                _sharedCameraRecoil.KickCamera(target, args.OurBody.LinearVelocity.Normalized());
+        }
 
         if (component.DeleteOnCollide)
             QueueDel(uid);
