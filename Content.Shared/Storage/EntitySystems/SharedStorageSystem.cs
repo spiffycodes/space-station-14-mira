@@ -132,8 +132,8 @@ public abstract class SharedStorageSystem : EntitySystem
 
         SubscribeAllEvent<StorageInteractWithItemEvent>(OnInteractWithItem);
         SubscribeAllEvent<StorageSetItemLocationEvent>(OnSetItemLocation);
-        SubscribeAllEvent<StorageInsertItemIntoLocationEvent>(OnInsertItemIntoLocation);
         SubscribeAllEvent<StorageRemoveItemEvent>(OnRemoveItem);
+        SubscribeAllEvent<StorageInsertItemIntoLocationEvent>(OnInsertItemIntoLocation);
         SubscribeAllEvent<StorageSaveItemLocationEvent>(OnSaveItemLocation);
 
         SubscribeLocalEvent<StorageComponent, GotReclaimedEvent>(OnReclaimed);

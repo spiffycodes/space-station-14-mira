@@ -33,6 +33,7 @@
   - type: StationAiHeld
   - type: StationAiOverlay
   - type: ShowElectrocutionHUD
+  - type: ShowHackingHUD
   - type: ActionGrant
     actions:
     - ActionJumpToCore
@@ -50,6 +51,8 @@
         type: SiliconLawBoundUserInterface
       enum.CommunicationsConsoleUiKey.Key:
         type: CommunicationsConsoleBoundUserInterface
+      enum.StoreUiKey.Key:
+        type: StoreBoundUserInterface
   - type: IntrinsicUI
     uis:
       enum.RadarConsoleUiKey.Key:
@@ -77,6 +80,7 @@
     - sprite: Mobs/Silicon/station_ai.rsi
       state: default
   - type: ShowJobIcons
+  - type: StationAiCanHack
 
 - type: entity
   id: AiHeldIntellicard
@@ -298,16 +302,29 @@
     sprite: Objects/Devices/ai_card.rsi
     layers:
     - state: base
+      map: [ "enum.StationAiVisualLayers.Base" ]
     - state: full
-      map: ["unshaded"]
+      map: [ "enum.StationAiVisualLayers.Screen" ]
       shader: unshaded
-  - type: Appearance
-  - type: GenericVisualizer
+  - type: StationAiHolder
+    slot:
+      name: station-ai-mind-slot
+      locked: false
+      disableEject: true
+      whitelist:
+        tags:
+        - StationAi
+    updateSprite: false
     visuals:
-      enum.StationAiVisualState.Key:
-        unshaded:
-          Empty: { state: empty }
-          Occupied: { state: full }
+      Empty:
+        Screen:
+          sprite: Objects/Devices/ai_card.rsi
+          state: empty
+      Occupied:
+        Screen:
+          sprite: Objects/Devices/ai_card.rsi
+          state: full
+  - type: Appearance
   - type: Intellicard
 
 - type: entity
@@ -326,10 +343,13 @@
   name: AI Core
   description: The latest in Artificial Intelligences.
   parent:
-  - BaseStructure
+  - BaseMachinePowered
   - AiHolder
   suffix: Empty
   components:
+  - type: Anchorable
+    flags:
+    - Anchorable
   - type: WarpPoint
   - type: ContainerComp
     proto: AiHeld
@@ -338,15 +358,28 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 100
+        damage: 600
       behaviors:
       - !type:PlaySoundBehavior
         sound:
           collection: MetalBreak
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 3
+            max: 8
+          CableApcStack1:
+            min: 1
+            max: 3
   - type: ApcPowerReceiver
-    powerLoad: 1000
+  - type: ExtensionCableReceiver
+  - type: Battery
+    maxCharge: 5000
+    startingCharge: 5000
+  - type: StationAiRequirePower
+    wattage: 50
   - type: StationAiCore
   - type: StationAiVision
   - type: InteractionOutline
@@ -354,9 +387,27 @@
     sprite: Mobs/Silicon/station_ai.rsi
     layers:
     - state: base
+      map: [ "enum.StationAiVisualLayers.Base" ]
     - state: ai_empty
-      map: ["unshaded"]
+      map: [ "enum.StationAiVisualLayers.Screen" ]
       shader: unshaded
+  - type: StationAiHolder
+    slot:
+      name: station-ai-mind-slot
+      locked: false
+      disableEject: true
+      whitelist:
+        tags:
+        - StationAi
+    visuals:
+      Empty:
+        Screen:
+          sprite: Mobs/Silicon/station_ai.rsi
+          state: ai_empty
+      Occupied:
+        Screen:
+          sprite: Mobs/Silicon/station_ai.rsi
+          state: ai
   - type: Appearance
   - type: InteractionPopup
     interactSuccessString: petting-success-station-ai
@@ -364,12 +415,6 @@
     messagePerceivedByOthers: petting-success-station-ai-others # Otherwise AI cannot tell its being pet as It's just a brain inside of the core, not the core itself.
     interactSuccessSound:
       path: /Audio/Ambience/Objects/periodic_beep.ogg
-  - type: GenericVisualizer
-    visuals:
-      enum.StationAiVisualState.Key:
-        unshaded:
-          Empty: { state: ai_empty }
-          Occupied: { state: ai }
   - type: Telephone
     compatibleRanges:
     - Grid
@@ -401,7 +446,9 @@
     sprite: Mobs/Silicon/station_ai.rsi
     layers:
     - state: base
+      map: [ "enum.StationAiVisualLayers.Base" ]
     - state: ai
+      map: [ "enum.StationAiVisualLayers.Screen" ]
       shader: unshaded
 
 # The actual brain inside the core
@@ -426,8 +473,22 @@
     interfaces:
       enum.SiliconLawsUiKey.Key:
         type: SiliconLawBoundUserInterface
+        requireInputValidation: false
+      enum.StoreUiKey.Key:
+        type: StoreBoundUserInterface
   - type: ComplexInteraction
+  - type: Store
+    categories:
+    - AiDestructive
+    - AiUtility
+    - AiUpgrade
+    currencyWhitelist:
+    - Power
+    balance:
+      Power: 10
+  - type: DoorRemote
   - type: Actions
+  - type: StationAiCanShunt
   - type: Access
     groups:
     - AllAccess

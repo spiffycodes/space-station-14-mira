@@ -128,6 +128,7 @@ public abstract partial class SharedStationAiSystem
 
         if (TryComp(ev.Actor, out StationAiHeldComponent? aiComp) &&
            (!TryComp(ev.Target, out StationAiWhitelistComponent? whitelistComponent) ||
+            _whitelist.IsWhitelistFail(whitelistComponent.Whitelist, ev.Actor) ||
             !ValidateAi((ev.Actor, aiComp))))
         {
             if (whitelistComponent is { Enabled: false })
@@ -142,9 +143,10 @@ public abstract partial class SharedStationAiSystem
     {
         // Cancel if it's not us or something with a whitelist, or whitelist is disabled.
         args.Cancelled = (!TryComp(args.Target, out StationAiWhitelistComponent? whitelistComponent)
-                          || !whitelistComponent.Enabled)
-                         && ent.Owner != args.Target
-                         && args.Target != null;
+                        || !whitelistComponent.Enabled
+                        || _whitelist.IsWhitelistFail(whitelistComponent.Whitelist, ent.Owner))
+                        && ent.Owner != args.Target
+                        && args.Target != null;
         if (whitelistComponent is { Enabled: false })
         {
             ShowDeviceNotRespondingPopup(ent.Owner);
@@ -168,7 +170,7 @@ public abstract partial class SharedStationAiSystem
         var verb = new AlternativeVerb
         {
             Text = isOpen ? Loc.GetString("ai-close") : Loc.GetString("ai-open"),
-            Act = () => 
+            Act = () =>
             {
                 // no need to show menu if device is not powered.
                 if (!PowerReceiver.IsPowered(ent.Owner))

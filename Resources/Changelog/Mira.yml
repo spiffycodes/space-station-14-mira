@@ -981,5 +981,79 @@ Entries:
     type: Add
   - message: Dragging items out of containers applies forensics
     type: Tweak
-  id: 144
-  time: '2024-01-03T00:01:00.0000000+00:00'
+  id: 145
+  time: '2025-01-03T00:01:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Added AI screen loadouts
+    type: Add
+  id: 146
+  time: '2025-01-03T08:35:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Janitor cyborgs can once again clean puddles
+    type: Fix
+  - message: Added a 2.5 second grace period to being slipped
+    type: Add
+  id: 147
+  time: '2025-01-04T03:30:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Lizards properly take damage again
+    type: Fix
+  id: 148
+  time: '2025-01-06T07:50:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Dragging items out of storage works again
+    type: Fix
+  id: 149
+  time: '2025-01-06T04:30:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: The AI can hack APCs to gain power
+    type: Add
+  - message: The AI can spend power for modules in a store
+    type: Add
+  id: 150
+  time: '2025-01-06T05:20:00.0000000+00:00'
+- author: Anurath
+  changes:
+  - message: The AI can shunt into hacked APCs
+    type: Add
+  id: 151
+  time: '2025-01-06T05:20:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Added a 3 second grace period for diona to absorb puddles
+    type: Add
+  id: 152
+  time: '2025-01-06T06:30:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Communications console has a unique announcement sound
+    type: Add
+  id: 153
+  time: '2025-01-06T07:15:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Damage regeneration is no longer super slow
+    type: Fix
+  id: 154
+  time: '2025-01-06T07:45:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Added the atmospherics AI module to control atmos devices
+    type: Add
+  id: 155
+  time: '2025-01-07T01:50:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: The AI core can be destroyed
+    type: Add
+  - message: The AI dies if it is without power for too long
+    type: Add
+  - message: The AI core can be reanchored
+    type: Tweak
+  id: 156
+  time: '2025-01-07T09:50:00.0000000+00:00'
