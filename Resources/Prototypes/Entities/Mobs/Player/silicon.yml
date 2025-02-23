@@ -408,6 +408,10 @@
         Screen:
           sprite: Mobs/Silicon/station_ai.rsi
           state: ai
+      Dead:
+        Screen:
+          sprite: Mobs/Silicon/station_ai.rsi
+          state: ai_dead
   - type: Appearance
   - type: InteractionPopup
     interactSuccessString: petting-success-station-ai
@@ -561,7 +565,7 @@
   - type: ContainerFill
     containers:
       borg_brain:
-        - MMIFilled
+        - PositronicBrain
   - type: ItemSlots
     slots:
       cell_slot:

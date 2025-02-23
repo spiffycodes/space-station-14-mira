@@ -3,7 +3,10 @@
   name: trait-blindness-name
   description: trait-blindness-desc
   traitGear: WhiteCane
-  category: Disabilities
+  cost: -3
+  icon:
+    sprite: Interface/Traits/disabilities.rsi
+    state: blind
   whitelist:
     components:
       - Blindable
@@ -15,7 +18,10 @@
   name: trait-poor-vision-name
   description: trait-poor-vision-desc
   traitGear: ClothingEyesGlasses
-  category: Disabilities
+  cost: -1
+  icon:
+    sprite: Interface/Traits/disabilities.rsi
+    state: poor_vision
   whitelist:
     components:
       - Blindable
@@ -27,7 +33,10 @@
   id: Narcolepsy
   name: trait-narcolepsy-name
   description: trait-narcolepsy-desc
-  category: Disabilities
+  cost: -2
+  icon:
+    sprite: Interface/Traits/disabilities.rsi
+    state: narcolepsy
   components:
     - type: Narcolepsy
       timeBetweenIncidents: 300, 600
@@ -37,7 +46,10 @@
   id: Unrevivable
   name: trait-unrevivable-name
   description: trait-unrevivable-desc
-  category: Disabilities
+  cost: -2
+  icon:
+    sprite: Interface/Traits/disabilities.rsi
+    state: unrevivable
   components:
     - type: Unrevivable
 
@@ -45,7 +57,10 @@
   id: Muted
   name: trait-muted-name
   description: trait-muted-desc
-  category: Disabilities
+  cost: -1
+  icon:
+    sprite: Interface/Traits/disabilities.rsi
+    state: muted
   blacklist:
     components:
       - BorgChassis
@@ -56,7 +71,10 @@
   id: WheelchairBound
   name: trait-wheelchair-bound-name
   description: trait-wheelchair-bound-desc
-  category: Disabilities
+  cost: -1
+  icon:
+    sprite: Interface/Traits/disabilities.rsi
+    state: wheelchair
   blacklist:
     components:
       - BorgChassis
@@ -69,7 +87,9 @@
   id: Paracusia
   name: trait-paracusia-name
   description: trait-paracusia-desc
-  category: Disabilities
+  icon:
+    sprite: Interface/Traits/disabilities.rsi
+    state: paracusia
   components:
     - type: Paracusia
       minTimeBetweenIncidents: 0.1

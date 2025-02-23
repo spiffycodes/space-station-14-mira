@@ -1,5 +1,6 @@
 using Content.Shared.Whitelist;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Utility;
 
 namespace Content.Shared.Traits;
 
@@ -23,7 +24,13 @@ public sealed partial class TraitPrototype : IPrototype
     /// The description of this trait.
     /// </summary>
     [DataField]
-    public LocId? Description { get; private set; }
+    public LocId Description { get; private set; }
+
+    /// <summary>
+    /// The icon to show in the lobby.
+    /// </summary>
+    [DataField]
+    public SpriteSpecifier? Icon { get; private set; }
 
     /// <summary>
     /// Don't apply this trait to entities this whitelist IS NOT valid for.
@@ -41,7 +48,10 @@ public sealed partial class TraitPrototype : IPrototype
     /// The components that get added to the player, when they pick this trait.
     /// </summary>
     [DataField]
-    public ComponentRegistry Components { get; private set; } = default!;
+    public ComponentRegistry? Components { get; private set; } = default!;
+
+    [DataField(serverOnly: true)]
+    public TraitSpecial[] Special { get; private set; } = Array.Empty<TraitSpecial>();
 
     /// <summary>
     /// Gear that is given to the player, when they pick this trait.

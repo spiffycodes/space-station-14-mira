@@ -1057,3 +1057,163 @@ Entries:
     type: Tweak
   id: 156
   time: '2025-01-07T09:50:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Added malfunctioning AI
+    type: Add
+  id: 157
+  time: '2025-01-07T17:10:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: You no longer slow down further on stamina damage recovery
+    type: Fix
+  - message: Low stamina damage weapons no longer slow you down while high stamina does
+    type: Fix
+  id: 158
+  time: '2025-01-09T22:45:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: As a slime person you can press E on yourself to open your storage again
+    type: Fix
+  id: 159
+  time: '2025-01-07T23:30:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Examining a persons health works again
+    type: Fix
+  id: 160
+  time: '2025-01-07T23:50:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Temperature damage works again
+    type: Fix
+  id: 161
+  time: '2025-01-07T23:59:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Malfunctioning AIs law 0 will not be readded every time you open up your laws
+    type: Fix
+  id: 162
+  time: '2025-01-07T23:59:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Chemicals should not heal at comically low ammounts
+    type: Fix
+  id: 163
+  time: '2025-01-11T18:25:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Improved the trait UI in the lobby
+    type: Tweak
+  id: 164
+  time: '2025-01-13T12:40:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Closet skeletons get different clothing based on where they spawn
+    type: Add
+  id: 165
+  time: '2025-01-16T17:10:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Lowered AI playtime to 3 hours of cyborg
+    type: Tweak
+  id: 166
+  time: '2025-01-16T17:10:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Senior loadouts require 10 hours in the department
+    type: Tweak
+  id: 166
+  time: '2025-01-16T17:10:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Accentless gives you an extra accent point
+    type: Add
+  id: 167
+  time: '2025-01-18T16:50:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Round start cyborgs get a positronic brain again
+    type: Fix
+  id: 168
+  time: '2025-01-20T13:15:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: All traits except languages are grouped together and give points
+    type: Tweak
+  - message: Added the bilingual trait which selects a random language ontop of your existing ones
+    type: Add
+  - message: Added the glowing trait which gives you an inbuilt flashlight
+    type: Add
+  id: 169
+  time: '2025-01-20T13:30:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: When the AI dies it has a unique sprite
+    type: Add
+  id: 170
+  time: '2025-01-28T01:00:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Added animations to the doafter bar
+    type: Add
+  id: 171
+  time: '2025-01-28T18:20:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Changed the air vent, air scrubber and air alarm sprites
+    type: Tweak
+  id: 172
+  time: '2025-01-28T19:00:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Fixed air alarms glowing when unpowered
+    type: Fix
+  id: 173
+  time: '2025-01-29T19:00:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Fridges protect you from the nuke
+    type: Tweak
+  id: 174
+  time: '2025-02-04T11:30:00.0000000+00:00'
+- author: Anurath
+  changes:
+  - message: Cyborgs grant the AI vision
+    type: Add
+  - message: Cyborgs have a wire panel
+    type: Add
+  id: 175
+  time: '2025-02-09T20:30:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Adjusted lattice edges
+    type: Tweak
+  id: 176
+  time: '2025-02-09T20:55:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Added the securitron which patrols the halls and arrests anyone wanted
+    type: Add
+  id: 177
+  time: '2025-02-17T17:25:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Vehicles no longer spawn activated without a key
+    type: Fix
+  - message: Vehicles access properly updates
+    type: Fix
+  id: 178
+  time: '2025-02-17T21:00:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Criminal points now checks all the ids rather than the highest priority
+    type: Fix
+  id: 178
+  time: '2025-02-17T22:10:00.0000000+00:00'
+- author: Doctor-Cpu, Anurath, aspiffyfellow, Mehnix, Sentient Salad, lordofgab
+  changes:
+  - message: New central command map
+    type: Add
+  id: 179
+  time: '2025-02-22T20:00:00.0000000+00:00'
