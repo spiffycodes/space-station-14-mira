@@ -13358,11 +13358,6 @@ entities:
       rot: 3.141592653589793 rad
       pos: 53.5,-2.5
       parent: 2
-    - type: DeviceNetwork
-      configurators:
-      - invalid
-      deviceLists:
-      - 94
 - proto: AirSensorVox
   entities:
   - uid: 445
@@ -47540,11 +47535,6 @@ entities:
     - type: Transform
       pos: 51.5,0.5
       parent: 2
-    - type: DeviceNetwork
-      configurators:
-      - invalid
-      deviceLists:
-      - 94
   - uid: 6465
     components:
     - type: Transform
@@ -61922,11 +61912,6 @@ entities:
       rot: 3.141592653589793 rad
       pos: 54.5,-1.5
       parent: 2
-    - type: DeviceNetwork
-      configurators:
-      - invalid
-      deviceLists:
-      - 94
     - type: AtmosPipeColor
       color: '#0335FCFF'
 - proto: GasVentPumpVox
@@ -62943,11 +62928,6 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 52.5,-1.5
       parent: 2
-    - type: DeviceNetwork
-      configurators:
-      - invalid
-      deviceLists:
-      - 94
     - type: AtmosPipeColor
       color: '#FF1212FF'
 - proto: GasVentScrubberVox
