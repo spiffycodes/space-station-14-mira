@@ -41,6 +41,14 @@ public sealed partial record PolymorphConfiguration
     public EntProtoId Entity;
 
     /// <summary>
+    /// Additional entity to spawn when polymorphing/reverting.
+    /// Gets parented to the entity polymorphed into.
+    /// Useful for visual effects.
+    /// </summary>
+    [DataField(serverOnly: true)]
+    public EntProtoId? EffectProto;
+
+    /// <summary>
     /// The delay between the polymorph's uses in seconds
     /// Slightly weird as of right now.
     /// </summary>
@@ -134,6 +142,18 @@ public sealed partial record PolymorphConfiguration
     /// </summary>
     [DataField]
     public SoundSpecifier? ExitPolymorphSound;
+
+    /// <summary>
+    ///     If not null, this popup will be displayed when being polymorphed into something.
+    /// </summary>
+    [DataField]
+    public LocId? PolymorphPopup = "polymorph-popup-generic";
+
+    /// <summary>
+    ///     If not null, this popup will be displayed when when being reverted from a polymorph.
+    /// </summary>
+    [DataField]
+    public LocId? ExitPolymorphPopup = "polymorph-revert-popup-generic";
 }
 
 public enum PolymorphInventoryChange : byte
@@ -141,16 +161,4 @@ public enum PolymorphInventoryChange : byte
     None,
     Drop,
     Transfer,
-}
-
-public sealed class PolymorphedEvent : EntityEventArgs
-{
-    public EntityUid NewEntity;
-    public bool IsRevert;
-
-    public PolymorphedEvent(EntityUid newEn, bool revert = false)
-    {
-        NewEntity = newEn;
-        IsRevert = revert;
-    }
 }

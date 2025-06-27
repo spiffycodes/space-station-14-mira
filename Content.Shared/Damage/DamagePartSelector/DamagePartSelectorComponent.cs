@@ -6,17 +6,28 @@ using Robust.Shared.Utility;
 
 namespace Content.Shared.Damage.DamageSelector;
 
-[RegisterComponent, NetworkedComponent]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class DamagePartSelectorComponent : Component
 {
-    [ViewVariables]
-    public BodyPart SelectedPart = new BodyPart(BodyPartType.Torso, BodyPartSymmetry.None);
+    [ViewVariables, AutoNetworkedField]
+    public BodyPart SelectedPart = new(BodyPartType.Torso, BodyPartSymmetry.None);
 
     [DataField(required: true)]
-    public Dictionary<BodyPart, SpriteSpecifier> SelectableParts = new();
+    public List<DamagePartSelectorEntry> SelectableParts = [];
 
     [ViewVariables]
     public EntityUid? Action;
+}
+
+[Serializable, NetSerializable]
+[DataDefinition]
+public sealed partial class DamagePartSelectorEntry
+{
+    [DataField(required: true)]
+    public BodyPart BodyPart;
+
+    [DataField(required: true)]
+    public SpriteSpecifier Sprite;
 }
 
 public sealed partial class DamageSelectorActionEvent : InstantActionEvent;

@@ -1,5 +1,6 @@
 using Content.Shared.Item;
 using Content.Shared.Storage.EntitySystems;
+using Content.Shared.Tag;
 using Content.Shared.Whitelist;
 using Robust.Shared.Audio;
 using Robust.Shared.Containers;
@@ -18,6 +19,14 @@ namespace Content.Shared.Storage
     public sealed partial class StorageComponent : Component
     {
         public static string ContainerId = "storagebase";
+
+        public const byte ChunkSize = 8;
+
+        // No datafield because we can just derive it from stored items.
+        /// <summary>
+        /// Bitmask of occupied tiles
+        /// </summary>
+        public Dictionary<Vector2i, ulong> OccupiedGrid = new();
 
         [ViewVariables]
         public Container Container = default!;
@@ -46,7 +55,6 @@ namespace Content.Shared.Storage
         /// The maximum size item that can be inserted into this storage,
         /// </summary>
         [DataField, ViewVariables(VVAccess.ReadWrite)]
-        [Access(typeof(SharedStorageSystem))]
         public ProtoId<ItemSizePrototype>? MaxItemSize;
 
         // TODO: Make area insert its own component.
@@ -149,10 +157,36 @@ namespace Content.Shared.Storage
 
         public Vector2 OriginalScale;
 
+        /// <summary>
+        /// Entities with this tag won't trigger storage sound.
+        /// </summary>
+        [DataField]
+        public ProtoId<TagPrototype> SilentStorageUserTag = "SilentStorageUser";
+
         [Serializable, NetSerializable]
         public enum StorageUiKey : byte
         {
             Key,
+        }
+
+        /// <summary>
+        /// Allow or disallow showing the "open/close storage" verb.
+        /// This is desired on items that we don't want to be accessed by the player directly.
+        /// </summary>
+        [DataField]
+        public bool ShowVerb = true;
+    }
+
+    [Serializable, NetSerializable]
+    public sealed class OpenNestedStorageEvent : EntityEventArgs
+    {
+        public readonly NetEntity InteractedItemUid;
+        public readonly NetEntity StorageUid;
+
+        public OpenNestedStorageEvent(NetEntity interactedItemUid, NetEntity storageUid)
+        {
+            InteractedItemUid = interactedItemUid;
+            StorageUid = storageUid;
         }
     }
 
@@ -188,16 +222,22 @@ namespace Content.Shared.Storage
     }
 
     [Serializable, NetSerializable]
-    public sealed class StorageRemoveItemEvent : EntityEventArgs
+    public sealed class StorageTransferItemEvent : EntityEventArgs
     {
         public readonly NetEntity ItemEnt;
 
+        /// <summary>
+        /// Target storage to receive the transfer.
+        /// </summary>
         public readonly NetEntity StorageEnt;
 
-        public StorageRemoveItemEvent(NetEntity itemEnt, NetEntity storageEnt)
+        public readonly ItemStorageLocation Location;
+
+        public StorageTransferItemEvent(NetEntity itemEnt, NetEntity storageEnt, ItemStorageLocation location)
         {
             ItemEnt = itemEnt;
             StorageEnt = storageEnt;
+            Location = location;
         }
     }
 
@@ -257,7 +297,7 @@ namespace Content.Shared.Storage
     public record struct StorageInteractAttemptEvent(bool Silent, bool Cancelled = false);
 
     [ByRefEvent]
-    public record struct StorageInteractUsingAttemptEvent(bool Cancelled = false);
+    public record struct StorageInteractUsingAttemptEvent(EntityUid Using, bool Cancelled = false);
 
     [ByRefEvent]
     public record struct StorageRemovedItemEvent(EntityUid User, EntityUid Storage);

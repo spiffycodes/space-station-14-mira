@@ -85,6 +85,12 @@ public abstract class SharedResearchSystem : EntitySystem
                 return false;
         }
 
+        foreach (var prereq in tech.TechnologyBlacklist)
+        {
+            if (component.UnlockedTechnologies.Contains(prereq))
+                return false;
+        }
+
         return true;
     }
 
@@ -227,6 +233,9 @@ public abstract class SharedResearchSystem : EntitySystem
             return;
         component.MainDiscipline = prototype.Discipline;
         Dirty(uid, component);
+
+        var ev = new TechnologyDatabaseModifiedEvent();
+        RaiseLocalEvent(uid, ref ev);
     }
 
     /// <summary>
@@ -298,7 +307,7 @@ public abstract class SharedResearchSystem : EntitySystem
         component.UnlockedRecipes.Add(recipe);
         Dirty(uid, component);
 
-        var ev = new TechnologyDatabaseModifiedEvent();
+        var ev = new TechnologyDatabaseModifiedEvent(new List<string> { recipe });
         RaiseLocalEvent(uid, ref ev);
     }
 }

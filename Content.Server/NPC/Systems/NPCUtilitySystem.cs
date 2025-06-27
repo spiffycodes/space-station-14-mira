@@ -8,6 +8,7 @@ using Content.Server.Nutrition.Components;
 using Content.Server.Nutrition.EntitySystems;
 using Content.Server.Storage.Components;
 using Content.Shared.Body.Systems;
+using Content.Server.Temperature.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Damage;
 using Content.Shared.Examine;
@@ -16,12 +17,13 @@ using Content.Shared.Fluids.Components;
 using Content.Shared.Hands.Components;
 using Content.Shared.Inventory;
 using Content.Shared.Mobs;
-using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.NPC.Systems;
 using Content.Shared.Nutrition.Components;
 using Content.Shared.Nutrition.EntitySystems;
+using Content.Shared.Stunnable;
 using Content.Shared.Tools.Systems;
+using Content.Shared.Turrets;
 using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Events;
@@ -56,6 +58,7 @@ public sealed class NPCUtilitySystem : EntitySystem
     [Dependency] private readonly ExamineSystemShared _examine = default!;
     [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
     [Dependency] private readonly MobThresholdSystem _thresholdSystem = default!;
+    [Dependency] private readonly TurretTargetSettingsSystem _turretTargetSettings = default!;
 
     private EntityQuery<PuddleComponent> _puddleQuery;
     private EntityQuery<TransformComponent> _xformQuery;
@@ -232,6 +235,9 @@ public sealed class NPCUtilitySystem : EntitySystem
             {
                 if (_container.TryGetContainingContainer(targetUid, out var container))
                 {
+                    if (container.Owner == owner)
+                        return 0f;
+
                     if (TryComp<EntityStorageComponent>(container.Owner, out var storageComponent))
                     {
                         if (storageComponent is { Open: false } && _weldable.IsWelded(container.Owner))
@@ -377,6 +383,25 @@ public sealed class NPCUtilitySystem : EntitySystem
                     if (TryComp(targetUid, out FlammableComponent? fire) && fire.OnFire)
                         return 1f;
                     return 0f;
+                }
+            case TargetIsStunnedCon:
+                {
+                    return HasComp<StunnedComponent>(targetUid) ? 1f : 0f;
+                }
+            case TurretTargetingCon:
+                {
+                    if (!TryComp<TurretTargetSettingsComponent>(owner, out var turretTargetSettings) ||
+                        _turretTargetSettings.EntityIsTargetForTurret((owner, turretTargetSettings), targetUid))
+                        return 1f;
+
+                    return 0f;
+                }
+            case TargetLowTempCon con:
+                {
+                    if (!TryComp<TemperatureComponent>(targetUid, out var temperature))
+                        return 0f;
+
+                    return temperature.CurrentTemperature <= con.MinTemp ? 1f : 0f;
                 }
             default:
                 throw new NotImplementedException();

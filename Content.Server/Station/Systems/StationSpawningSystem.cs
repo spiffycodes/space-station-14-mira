@@ -1,5 +1,4 @@
 using Content.Server.Access.Systems;
-using Content.Server.DetailExaminable;
 using Content.Server.Humanoid;
 using Content.Server.IdentityManagement;
 using Content.Server.Mind.Commands;
@@ -12,16 +11,14 @@ using Content.Shared.Access.Systems;
 using Content.Shared.CCVar;
 using Content.Shared.Clothing;
 using Content.Shared.GameTicking;
+using Content.Shared.DetailExaminable;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Prototypes;
 using Content.Shared.PDA;
 using Content.Shared.Preferences;
 using Content.Shared.Preferences.Loadouts;
-using Content.Shared.Random;
-using Content.Shared.Random.Helpers;
 using Content.Shared.Roles;
 using Content.Shared.Station;
-using Content.Shared.StatusIcon;
 using JetBrains.Annotations;
 using Robust.Shared.Configuration;
 using Robust.Shared.Map;
@@ -218,30 +215,22 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
             }
         }
 
-        string speciesId;
-        if (_randomizeCharacters)
-        {
-            var weightId = _configurationManager.GetCVar(CCVars.ICRandomSpeciesWeights);
-            var weights = _prototypeManager.Index<WeightedRandomSpeciesPrototype>(weightId);
-            speciesId = weights.Pick(_random);
-        }
-        else if (profile != null)
-        {
-            speciesId = profile.Species;
-        }
-        else
-        {
-            speciesId = SharedHumanoidAppearanceSystem.DefaultSpecies;
-        }
+        string speciesId = profile != null ? profile.Species : SharedHumanoidAppearanceSystem.DefaultSpecies;
 
         if (!_prototypeManager.TryIndex<SpeciesPrototype>(speciesId, out var species))
             throw new ArgumentException($"Invalid species prototype was used: {speciesId}");
 
         entity ??= SpawnEntity(species.Prototype, coordinates, prototype);
 
-        if (_randomizeCharacters)
+        if (profile != null)
         {
-            profile = HumanoidCharacterProfile.RandomWithSpecies(speciesId);
+            _humanoidSystem.LoadProfile(entity.Value, profile);
+            _metaSystem.SetEntityName(entity.Value, profile.Name);
+
+            if (profile.FlavorText != "" && _configurationManager.GetCVar(CCVars.FlavorText))
+            {
+                AddComp<DetailExaminableComponent>(entity.Value).Content = profile.FlavorText;
+            }
         }
 
         if (roleProto != null)
@@ -256,18 +245,11 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
             EquipLoadout(entity.Value, jobLoadout, loadout, roleProto, prototype, profile);
         }
 
-        if (profile != null)
-        {
-            if (job != null)
-                SetPdaAndIdCardData(entity.Value, profile.Name, prototype, station);
+        var gearEquippedEv = new StartingGearEquippedEvent(entity.Value);
+        RaiseLocalEvent(entity.Value, ref gearEquippedEv);
 
-            _humanoidSystem.LoadProfile(entity.Value, profile);
-            _metaSystem.SetEntityName(entity.Value, profile.Name);
-            if (profile.FlavorText != "" && _configurationManager.GetCVar(CCVars.FlavorText))
-            {
-                AddComp<DetailExaminableComponent>(entity.Value).Content = profile.FlavorText;
-            }
-        }
+        if (prototype != null && TryComp(entity.Value, out MetaDataComponent? metaData))
+            SetPdaAndIdCardData(entity.Value, metaData.EntityName, prototype, station);
 
         _identity.QueueIdentityUpdate(entity.Value);
         return entity.Value;

@@ -16,10 +16,11 @@ using Content.Shared.Movement.Systems;
 using Robust.Shared.Audio;
 using Robust.Shared.Timing;
 using System.Numerics;
+using Content.Shared.Damage.Components;
 
 namespace Content.Server.Body.Systems;
 
-public sealed class BodySystem : SharedBodySystem
+public sealed partial class BodySystem : SharedBodySystem
 {
     [Dependency] private readonly GhostSystem _ghostSystem = default!;
     [Dependency] private readonly IGameTiming _gameTiming = default!;
@@ -33,6 +34,8 @@ public sealed class BodySystem : SharedBodySystem
     public override void Initialize()
     {
         base.Initialize();
+
+        InitializeRelays();
 
         SubscribeLocalEvent<BodyComponent, MoveInputEvent>(OnRelayMoveInput);
         SubscribeLocalEvent<BodyComponent, ApplyMetabolicMultiplierEvent>(OnApplyMetabolicMultiplier);
@@ -71,7 +74,7 @@ public sealed class BodySystem : SharedBodySystem
         {
             var damage = _mobThreshold.GetThresholdForState(uid, MobState.Dead, thresholds);
 
-            if (damage != FixedPoint2.MaxValue)
+            if (damage != FixedPoint2.Zero)
             {
                 EnsureBodyThreshold(uid, component, damage);
                 return;
@@ -83,6 +86,7 @@ public sealed class BodySystem : SharedBodySystem
     {
         var parts = GetBodyDamageable(uid, body);
         Dictionary<EntityUid, (FixedPoint2 MaxDamage, float Scale)> deadThresholds = new();
+        HashSet<EntityUid> vitalLimbs = new();
         var totalThreshold = FixedPoint2.Zero;
 
         foreach (var (part, _) in parts)
@@ -90,11 +94,34 @@ public sealed class BodySystem : SharedBodySystem
             if (!TryComp<BodyPartComponent>(part, out var partComp))
                 continue;
 
-            if (!TryGetLimbStateThreshold(part, WoundState.Dead, out var deadThreshold))
+            if (!TryComp<BodyPartThresholdsComponent>(part, out var thresholdsComp))
                 continue;
 
-            deadThresholds.Add(part, (deadThreshold, partComp.OverallDamageScale));
+            if (!thresholdsComp.Thresholds.TryGetValue(WoundState.Dead, out var deadThreshold))
+                continue;
+
+            if (partComp.IsVital)
+            {
+                vitalLimbs.Add(part);
+            }
+            else
+            {
+                deadThresholds.Add(part, (deadThreshold, partComp.OverallDamageScale));
+            }
+
             totalThreshold += deadThreshold * partComp.OverallDamageScale;
+        }
+
+        foreach (var part in vitalLimbs)
+        {
+            if (!TryComp<BodyPartThresholdsComponent>(part, out var thresholdsComp))
+                continue;
+
+            if (!thresholdsComp.Thresholds.ContainsKey(WoundState.Dead))
+                continue;
+
+            thresholdsComp.Thresholds[WoundState.Dead] = threshold;
+            Dirty(part, thresholdsComp);
         }
 
         if (totalThreshold >= threshold)
@@ -104,32 +131,17 @@ public sealed class BodySystem : SharedBodySystem
 
         foreach (var (part, (deadThreshold, scale)) in deadThresholds)
         {
-            var weight = deadThreshold * scale;
-
-            var newThreshold = (weight / damageLeft) * threshold / scale;
-
             if (!TryComp<BodyPartThresholdsComponent>(part, out var thresholdsComp))
                 continue;
 
+            var weight = deadThreshold * scale;
+            var newThreshold = (weight / damageLeft) * threshold / scale;
 
-            FixedPoint2? partDeadThreshold = null;
-
-            foreach (var (partThreshold, partState) in thresholdsComp.Thresholds)
-            {
-                if (partState != WoundState.Dead)
-                    continue;
-
-                partDeadThreshold = partThreshold;
-            }
-
-            if (partDeadThreshold == null)
-                continue;
-
-            newThreshold += partDeadThreshold.Value;
+            newThreshold += deadThreshold;
             newThreshold *= LimbMultiplier;
 
-            thresholdsComp.Thresholds.Remove(partDeadThreshold.Value);
-            thresholdsComp.Thresholds.Add(newThreshold, WoundState.Dead);
+            thresholdsComp.Thresholds[WoundState.Dead] = newThreshold;
+            Dirty(part, thresholdsComp);
         }
     }
 
@@ -141,15 +153,11 @@ public sealed class BodySystem : SharedBodySystem
         // TODO: Predict this probably.
         base.AddPart(bodyEnt, partEnt, slotId);
 
-        if (TryComp<HumanoidAppearanceComponent>(bodyEnt, out var humanoid))
+        var layer = partEnt.Comp.ToHumanoidLayers();
+        if (layer != null)
         {
-            var layer = partEnt.Comp.ToHumanoidLayers();
-            if (layer != null)
-            {
-                var layers = HumanoidVisualLayersExtension.Sublayers(layer.Value);
-                _humanoidSystem.SetLayersVisibility(
-                    bodyEnt, layers, visible: true, permanent: true, humanoid);
-            }
+            var layers = HumanoidVisualLayersExtension.Sublayers(layer.Value);
+            _humanoidSystem.SetLayersVisibility(bodyEnt.Owner, layers, visible: true);
         }
     }
 
@@ -169,8 +177,7 @@ public sealed class BodySystem : SharedBodySystem
             return;
 
         var layers = HumanoidVisualLayersExtension.Sublayers(layer.Value);
-        _humanoidSystem.SetLayersVisibility(
-            bodyEnt, layers, visible: false, permanent: true, humanoid);
+        _humanoidSystem.SetLayersVisibility((bodyEnt, humanoid), layers, visible: false);
     }
 
     public override HashSet<EntityUid> GibBody(
@@ -190,6 +197,9 @@ public sealed class BodySystem : SharedBodySystem
         {
             return new HashSet<EntityUid>();
         }
+
+        if (HasComp<GodmodeComponent>(bodyId))
+            return new HashSet<EntityUid>();
 
         var xform = Transform(bodyId);
         if (xform.MapUid is null)

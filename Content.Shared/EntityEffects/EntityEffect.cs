@@ -89,6 +89,19 @@ public static class EntityEffectExt
     }
 }
 
+[ByRefEvent]
+public struct ExecuteEntityEffectEvent<T> where T : EntityEffect
+{
+    public T Effect;
+    public EntityEffectBaseArgs Args;
+
+    public ExecuteEntityEffectEvent(T effect, EntityEffectBaseArgs args)
+    {
+        Effect = effect;
+        Args = args;
+    }
+}
+
 /// <summary>
 ///     EntityEffectBaseArgs only contains the target of an effect.
 ///     If a trigger wants to include more info (e.g. the quantity of the chemical triggering the effect), it can be extended (see EntityEffectReagentArgs).
@@ -112,13 +125,13 @@ public record class EntityEffectReagentArgs : EntityEffectBaseArgs
 
     public Solution? Source;
 
-    public FixedPoint2 Quantity;
+    public FixedPoint2 Quantity; //amount of chem used a tick
 
     public ReagentPrototype? Reagent;
 
     public ReactionMethod? Method;
 
-    public FixedPoint2 Scale;
+    public FixedPoint2 Scale; //amount of chem
 
     public EntityEffectReagentArgs(EntityUid targetEntity, IEntityManager entityManager, EntityUid? organEntity, Solution? source, FixedPoint2 quantity, ReagentPrototype? reagent, ReactionMethod? method, FixedPoint2 scale) : base(targetEntity, entityManager)
     {

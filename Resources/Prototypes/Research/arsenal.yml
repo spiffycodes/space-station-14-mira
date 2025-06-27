@@ -27,6 +27,7 @@
   - BoxShotgunIncendiary
   - MagazineRifleIncendiary
   - MagazinePistolIncendiary
+  - MagazinePistolSubMachineGunIncendiary
   - MagazineLightRifleIncendiary
   - SpeedLoaderMagnumIncendiary
   - MagazineShotgunIncendiary
@@ -34,18 +35,6 @@
   - MagazineBoxMagnumIncendiary
   - MagazineBoxLightRifleIncendiary
   - MagazineBoxRifleIncendiary
-
-- type: technology
-  id: WeaponizedLaserManipulation
-  name: research-technology-weaponized-laser-manipulation
-  icon:
-    sprite: Objects/Weapons/Guns/Battery/laser_gun.rsi
-    state: icon
-  discipline: Arsenal
-  tier: 1
-  cost: 7500
-  recipeUnlocks:
-  - WeaponLaserCarbine
 
 - type: technology
   id: NonlethalAmmunition
@@ -74,6 +63,7 @@
   recipeUnlocks:
   - MagazineRifleUranium
   - MagazinePistolUranium
+  - MagazinePistolSubMachineGunUranium
   - MagazineLightRifleUranium
   - SpeedLoaderMagnumUranium
   - MagazineBoxPistolUranium
@@ -96,6 +86,7 @@
   - TelescopicShield
   - HoloprojectorSecurity
   - WeaponDisablerSMG
+  - ClothingBackpackElectropack
 
 - type: technology
   id: ExplosiveTechnology
@@ -115,17 +106,6 @@
   - ExplosivePayload
   - ChemicalPayload
 
-- type: technology
-  id: SpecialMeans
-  name: research-technology-special-means
-  icon:
-    sprite: Clothing/Back/Backpacks/electropack.rsi
-    state: icon
-  discipline: Arsenal
-  tier: 1
-  cost: 5000
-  recipeUnlocks:
-  - ClothingBackpackElectropack
 
 # Tier 2
 
@@ -140,18 +120,21 @@
   cost: 10000
   recipeUnlocks:
   - WeaponLaserCannon
+  - WeaponXrayCannon
 
 - type: technology
-  id: WaveParticleHarnessing
-  name: research-technology-wave-particle-harnessing
+  id: KineticModifications
+  name: research-technology-kinetic-modifications
   icon:
-    sprite: Objects/Weapons/Guns/Battery/xray.rsi
-    state: icon
+    sprite: Objects/Tools/upgrade.rsi
+    state: display
   discipline: Arsenal
   tier: 2
-  cost: 10000
+  cost: 7500
   recipeUnlocks:
-  - WeaponXrayCannon
+  - PKAUpgradeDamage
+  - PKAUpgradeRange
+  - PKAUpgradeFireRate
 
 - type: technology
   id: BasicShuttleArmament
@@ -191,16 +174,16 @@
   - PortableRecharger
 
 - type: technology
-  id: ExperimentalBatteryAmmo
-  name: research-technology-experimental-battery-ammo
+  id: ThermalWeaponry
+  name: research-technology-thermal-weaponry
   icon:
-    sprite: Objects/Weapons/Guns/Battery/svalinn.rsi
+    sprite: Objects/Weapons/Guns/Battery/temp_gun.rsi
     state: icon
   discipline: Arsenal
   tier: 3
   cost: 15000
   recipeUnlocks:
-  - WeaponLaserSvalinn
+  - WeaponTemperatureGun
 
 - type: technology
   id: AdvancedShuttleWeapon
@@ -217,3 +200,21 @@
   - ShuttleGunDusterCircuitboard
   technologyPrerequisites:
   - BasicShuttleArmament
+
+- type: technology
+  id: FurtherKnowledgeArsenal
+  name: research-technology-further-knowledge
+  icon:
+    sprite: Structures/Machines/rndpointsource.rsi
+    state: rndpointsource-icon
+  discipline: Arsenal
+  tier: 4
+  cost: 20000
+  recipeUnlocks:
+  - ResearchAndDevelopmentServerMachineCircuitboard
+  genericUnlocks:
+  - unlockDescription: station-event-funding-research-description
+    purchaseEvent: !type:ResearchFundingEvent
+      message: station-event-funding-research-announcement
+      discipline: station-event-funding-research-arsenal
+      payment: 20000

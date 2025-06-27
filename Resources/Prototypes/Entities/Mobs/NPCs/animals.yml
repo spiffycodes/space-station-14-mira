@@ -51,8 +51,6 @@
     flavorKind: station-event-random-sentience-flavor-organic
   - type: Bloodstream
     bloodMaxVolume: 50
-  - type: ReplacementAccent
-    accent: mouse
   - type: MeleeWeapon
     soundHit:
         path: /Audio/Effects/bite.ogg
@@ -61,9 +59,25 @@
     damage:
       types:
         Piercing: 5
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      30: Critical
+      60: Dead
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTypeTrigger
+        damageType: Blunt
+        damage: 120
+      behaviors:
+      - !type:GibBehavior
+        recursive: false
   - type: Tag
     tags:
     - VimPilot
+  - type: Body
+    prototype: Bat
 
 - type: entity
   name: bee
@@ -107,6 +121,17 @@
         Base: dead
       Dead:
         Base: dead
+  - type: Extractable
+    grindableSolutionName: food
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        reagents:
+        - ReagentId: GroundBee
+          Quantity: 1
+  - type: Butcherable
+    spawned:
+    - id: null # Should give nothing when you butcher it so we set the item id it needs to spawn to null
   - type: Item
     size: Tiny
   - type: Tag
@@ -114,6 +139,7 @@
     - Bee
     - Trash
   - type: Bloodstream
+    bloodReagent: InsectBlood
     bloodMaxVolume: 0.1
   - type: MobPrice
     price: 50
@@ -126,6 +152,8 @@
     rootTask:
       task: SimpleHostileCompound
   - type: ZombieImmune
+  - type: Body
+    prototype: Bee
 
 - type: entity
   name: bee
@@ -242,13 +270,14 @@
   - type: EggLayer
     eggSpawn:
     - id: FoodEgg
-  - type: ReplacementAccent
-    accent: chicken
+  - type: ExaminableHunger
   - type: SentienceTarget
     flavorKind: station-event-random-sentience-flavor-organic
   - type: NpcFactionMember
     factions:
     - Passive
+  - type: Body
+    prototype: Chicken
 
 - type: entity
   parent: MobChicken
@@ -326,6 +355,7 @@
   - type: Item
     size: Tiny
   - type: HTN
+    constantlyReplan: false
     rootTask:
       task: MouseCompound
   - type: Physics
@@ -380,6 +410,13 @@
     - chewy
   - type: Hunger
     baseDecayRate: 0.25
+  - type: CanEnterPipeCrawling
+  - type: UserInterface
+    interfaces:
+      enum.DamageSelectorUiKey.Key:
+        type: DamageSelectorBoundUserInterface
+      enum.PipeCrawlingLayerUiKey.Key:
+        type: PipeCrawlingLayerBoundUserInterface
   - type: Extractable
     grindableSolutionName: food
   - type: SolutionContainerManager
@@ -404,7 +441,8 @@
         !type:DamageTrigger
         damage: 10
       behaviors:
-      - !type:GibBehavior { }
+      - !type:GibBehavior
+        recursive: false
   - type: NonSpreaderZombie
   - type: SentienceTarget
     flavorKind: station-event-random-sentience-flavor-organic
@@ -416,7 +454,6 @@
     damage:
       types:
         Piercing: 0
-  - type: CanEnterPipeCrawling
 
 - type: entity
   name: cockroach
@@ -482,6 +519,8 @@
     name: ghost-role-information-mothroach-name
     description: ghost-role-information-mothroach-description
     rules: ghost-role-information-freeagent-rules
+    mindRoles:
+    - MindRoleGhostRoleFreeAgentHarmless
   - type: Fixtures
     fixtures:
       fix1:
@@ -500,7 +539,6 @@
     allowedEmotes: ['Chitter', 'Squeak']
   - type: FaxableObject
     insertingState: inserting_mothroach
-  - type: MothAccent
   - type: Sprite
     drawdepth: SmallMobs
     sprite: Mobs/Animals/mothroach/mothroach.rsi
@@ -541,7 +579,7 @@
     baseSprintSpeed : 4
     weightlessAcceleration: 1.5
     weightlessFriction: 1
-    weightlessModifier: 1
+    baseWeightlessModifier: 1
   - type: Damageable
     damageContainer: Biological
     damageModifierSet: Moth
@@ -559,15 +597,6 @@
       amount: 2
   - type: Extractable
     grindableSolutionName: food
-  - type: ReplacementAccent
-    accent: mothroach
-  - type: ZombieAccentOverride
-    accent: zombieMoth
-  - type: Vocal
-    sounds:
-      Male: UnisexMoth
-      Female: UnisexMoth
-      Unsexed: UnisexMoth
     wilhelmProbability: 0.001
   - type: MobPrice
     price: 150
@@ -590,7 +619,8 @@
         !type:DamageTrigger
         damage: 60
       behaviors:
-      - !type:GibBehavior { }
+      - !type:GibBehavior
+        recursive: false
   - type: FireVisuals
     sprite: Mobs/Effects/onfire.rsi
     normalState: Mouse_burning
@@ -752,13 +782,14 @@
   - type: EggLayer
     eggSpawn:
     - id: FoodEgg
-  - type: ReplacementAccent
-    accent: duck
+  - type: ExaminableHunger
   - type: SentienceTarget
     flavorKind: station-event-random-sentience-flavor-organic
   - type: NpcFactionMember
     factions:
     - Passive
+  - type: Body
+    prototype: DuckMallard
 
 - type: entity
   name: white duck #Quack
@@ -778,6 +809,8 @@
         Base: dead-1
       Dead:
         Base: dead-1
+  - type: Body
+    prototype: DuckWhite
 
 - type: entity
   name: brown duck #Quack
@@ -797,6 +830,8 @@
         Base: dead-2
       Dead:
         Base: dead-2
+  - type: Body
+    prototype: DuckBrown
 
 - type: entity
   id: FoodEggDuckFertilized
@@ -858,10 +893,29 @@
         Base: dead
       Dead:
         Base: dead
+  - type: Extractable
+    grindableSolutionName: food
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        reagents:
+        - ReagentId: UncookedAnimalProteins
+          Quantity: 1
+  - type: Butcherable
+    spawned:
+    - id: null # Should give nothing when you butcher it so we set the item id it needs to spawn to null
+  - type: Item
+    size: Tiny
+  - type: Tag
+    tags:
+    - Trash
   - type: Bloodstream
+    bloodReagent: InsectBlood
     bloodMaxVolume: 0.1
   - type: MobPrice
     price: 50
+  - type: Body
+    prototype: Butterfly
 
 - type: entity
   name: cow
@@ -930,6 +984,7 @@
     reagentId: Milk
     quantityPerUpdate: 25
     growthDelay: 30
+  - type: ExaminableHunger
   - type: Butcherable
     spawned:
     - id: FoodMeat
@@ -950,8 +1005,6 @@
   - type: NpcFactionMember
     factions:
     - Passive
-  - type: Body
-    prototype: AnimalRuminant
   - type: HTN
     rootTask:
       task: RuminantCompound
@@ -959,6 +1012,8 @@
     guides:
     - Chef
     - FoodRecipes
+  - type: Body
+    prototype: Cow
 
 - type: entity
   name: crab
@@ -1027,8 +1082,6 @@
     interactSuccessSpawn: EffectHearts
     interactSuccessSound:
       path: /Audio/Voice/Arachnid/arachnid_chitter.ogg
-  - type: ReplacementAccent
-    accent: crab
   - type: Bloodstream
     bloodMaxVolume: 50
     bloodReagent: CopperBlood
@@ -1039,7 +1092,7 @@
     rootTask:
       task: RuminantCompound
   - type: Body
-    prototype: AnimalHemocyanin
+    prototype: Crab
 
 - type: entity
   name: goat
@@ -1112,6 +1165,7 @@
     reagentId: MilkGoat
     quantityPerUpdate: 25
     growthDelay: 20
+  - type: ExaminableHunger
   - type: Wooly
   - type: Food
     solution: wool
@@ -1128,6 +1182,9 @@
   - type: Grammar
     attributes:
       gender: female # Here because of UdderComponent
+  - type: Speech
+    speechSounds: Goat
+    speechVerb: Goat
   - type: InteractionPopup
     successChance: 0.2
     interactSuccessString: petting-success-goat
@@ -1139,7 +1196,7 @@
     factions:
     - Passive
   - type: Body
-    prototype: AnimalRuminant
+    prototype: Goat
   - type: NPCRetaliation
     attackMemoryLength: 5
   - type: FactionException
@@ -1208,6 +1265,8 @@
   - type: NpcFactionMember
     factions:
     - Passive
+  - type: Body
+    prototype: Goose
 
 - type: entity
   name: gorilla
@@ -1275,6 +1334,30 @@
   - type: HTN
     rootTask:
       task: SimpleHostileCompound
+  - type: Body
+    prototype: Gorilla
+    blackboard:
+      NavClimb: !type:Bool
+        true
+      NavInteract: !type:Bool
+        true
+      NavPry: !type:Bool
+        true
+      NavSmash: !type:Bool
+        true
+  - type: Prying
+    pryPowered: true
+    force: true
+    speedModifier: 1.5
+    useSound:
+      path: /Audio/Items/crowbar.ogg
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      200: Critical
+      250: Dead
+  - type: StaminaResistance
+    damageCoefficient: 0.40
 
 - type: entity
   name: kangaroo
@@ -1321,8 +1404,6 @@
   - type: Inventory
     speciesId: kangaroo
     templateId: kangaroo
-  - type: ReplacementAccent
-    accent: kangaroo
   - type: Butcherable
     spawned:
     - id: FoodMeat
@@ -1345,12 +1426,6 @@
     description: ghost-role-information-kangaroo-description
     rules: ghost-role-information-nonantagonist-rules
   - type: GhostTakeoverAvailable
-  - type: Vocal
-    sounds:
-      Unsexed: Kangaroo
-  - type: FootstepModifier
-    footstepSoundCollection:
-      collection: FootstepBounce
   - type: Puller
     needsHands: false
   - type: StaminaDamageOnHit
@@ -1374,6 +1449,8 @@
   - type: HTN
     rootTask:
       task: SimpleHostileCompound
+  - type: Body
+    prototype: Kangaroo
 
 - type: entity
   name: boxing kangaroo
@@ -1440,8 +1517,8 @@
       state: body-overlay-2
       visible: false
     - map: [ "ears" ]
-    - map: [ "outerClothing" ]
     - map: [ "id" ]
+    - map: [ "outerClothing" ]
     - map: [ "mask" ]
     - map: [ "head" ]
     - map: [ "clownedon" ]
@@ -1456,8 +1533,6 @@
         clownedon:
           True: {visible: true}
           False: {visible: false}
-  - type: Body
-    prototype: Primate
   - type: CreamPied
   - type: FireVisuals
     sprite: Mobs/Effects/onfire.rsi
@@ -1527,7 +1602,6 @@
   - type: Speech
     speechSounds: Monkey
     speechVerb: Monkey
-  - type: MonkeyAccent
   - type: SentienceTarget
     flavorKind: station-event-random-sentience-flavor-primate
   - type: AlwaysRevolutionaryConvertible
@@ -1547,6 +1621,8 @@
         Burn: 3
     clumsySound:
       path: /Audio/Animals/monkey_scream.ogg
+  - type: Body
+    prototype: Monkey
 
 
 - type: entity
@@ -1563,7 +1639,6 @@
   - type: Speech
     speechSounds: Monkey
     speechVerb: Monkey
-  - type: MonkeyAccent
   - type: NpcFactionMember
     factions:
     - Syndicate
@@ -1573,11 +1648,16 @@
     name: ghost-role-information-monkey-name
     description: ghost-role-information-monkey-description
     rules: ghost-role-information-syndicate-reinforcement-rules
+    mindRoles:
+    # This is for syndicate monkeys that randomly gain sentience, thus have no summoner to team with
+    - MindRoleGhostRoleSoloAntagonist
     raffle:
       settings: default
   - type: GhostTakeoverAvailable
   - type: Loadout
     prototypes: [SyndicateOperativeGearMonkey]
+  - type: Body
+    prototype: Monkey
 
 - type: entity
   id: MobMonkeySyndicateAgent
@@ -1604,18 +1684,10 @@
   components:
   - type: NameIdentifier
     group: Kobold
-  - type: LizardAccent
-  - type: ReplacementAccent
-    accent: kobold
   - type: Speech
     speechSounds: Lizard
     speechVerb: Reptilian
     allowedEmotes: ['Thump']
-  - type: Vocal
-    sounds:
-      Male: MaleReptilian
-      Female: FemaleReptilian
-      Unsexed: MaleReptilian
   - type: BodyEmotes
     soundsId: ReptilianBodyEmotes
   - type: TypingIndicator
@@ -1719,6 +1791,8 @@
     name: ghost-role-information-kobold-name
     description: ghost-role-information-kobold-description
     rules: ghost-role-information-nonantagonist-rules
+  - type: Body
+    prototype: Kobold
 
 - type: entity
   name: kobold
@@ -1744,7 +1818,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      75: Critical
+      100: Critical
       200: Dead
   - type: NpcFactionMember
     factions:
@@ -1792,6 +1866,8 @@
     name: ghost-role-information-mouse-name
     description: ghost-role-information-mouse-description
     rules: ghost-role-information-freeagent-rules
+    mindRoles:
+    - MindRoleGhostRoleFreeAgentHarmless
   - type: GhostTakeoverAvailable
   - type: Speech
     speechSounds: Squeak
@@ -1835,8 +1911,16 @@
     factions:
       - Mouse
   - type: HTN
+    constantlyReplan: false
     rootTask:
       task: MouseCompound
+  - type: CanEnterPipeCrawling
+  - type: UserInterface
+    interfaces:
+      enum.DamageSelectorUiKey.Key:
+        type: DamageSelectorBoundUserInterface
+      enum.PipeCrawlingLayerUiKey.Key:
+        type: PipeCrawlingLayerBoundUserInterface
   - type: Physics
   - type: FaxableObject
     insertingState: inserting_mouse
@@ -1908,8 +1992,6 @@
     spawned:
     - id: FoodMeatRat
       amount: 1
-  - type: ReplacementAccent
-    accent: mouse
   - type: Tag
     tags:
     - Trash
@@ -1928,12 +2010,6 @@
     damage:
       types:
         Blunt: 0.1
-  - type: Vocal
-    sounds:
-      Male: Mouse
-      Female: Mouse
-      Unsexed: Mouse
-    wilhelmProbability: 0.001
   # TODO: Remove CombatMode when Prototype Composition is added
   - type: CombatMode
   - type: MeleeWeapon
@@ -1959,7 +2035,6 @@
       Taco: RatTaco
       Burger: RatBurger
       Skewer: RatSkewer
-  - type: CanEnterPipeCrawling
 
 - type: entity
   parent: MobMouse
@@ -2155,6 +2230,8 @@
   - type: SpeciesLanguage
     understoodLanguages:
     - Draconic
+  - type: Body
+    prototype: Lizard
 
 
 - type: entity
@@ -2203,6 +2280,8 @@
     interactSuccessSpawn: EffectHearts
   - type: Bloodstream
     bloodMaxVolume: 50
+  - type: Body
+    prototype: Slug
 
 - type: entity
   name: frog
@@ -2262,11 +2341,13 @@
   - type: Tag
     tags:
     - VimPilot
+  - type: Body
+    prototype: Frog
 
 # Would be cool to have some functionality for the parrot to be able to sit on stuff
 - type: entity
   name: parrot
-  parent: [ SimpleMobBase, FlyingMobBase ]
+  parent: [ SimpleMobBase, FlyingMobBase, StripableInventoryBase ]
   id: MobParrot
   description: Infiltrates your domain, spies on you, and somehow still a cool pet.
   components:
@@ -2302,13 +2383,12 @@
     spawned:
     - id: FoodMeat
       amount: 1
+  - type: Stripping
+  - type: Inventory
+    templateId: parrot
   - type: Speech
     speechSounds: Parrot
     speechVerb: Parrot
-  - type: Vocal
-    sounds:
-      Unsexed: Parrot
-  - type: ParrotAccent
   - type: InteractionPopup
     successChance: 0.6
     interactSuccessString: petting-success-bird
@@ -2318,6 +2398,10 @@
       path: /Audio/Animals/parrot_raught.ogg
   - type: Bloodstream
     bloodMaxVolume: 50
+  - type: MimicLearner
+  - type: MimicSpeaker
+    minDelay: 90
+    maxDelay: 150
 
 - type: entity
   name: penguin
@@ -2391,6 +2475,8 @@
     heatDamage:
       types:
         Heat : 0.2 #per second, scales with temperature & other constants
+  - type: Body
+    prototype: Penguin
 
 - type: entity
   name: grenade penguin
@@ -2442,6 +2528,7 @@
         Brute: 5
   - type: Item
     size: Normal
+    sprite: Mobs/Animals/grenadepenguin.rsi
   - type: OnUseTimerTrigger
     delay: 10
     beepSound:
@@ -2510,6 +2597,8 @@
   - type: Damageable
     damageContainer: Biological
     damageModifierSet: Scale
+  - type: Body
+    prototype: Snake
 
 # Code unique spider prototypes or combine them all into one spider and get a
 # random sprite state when you spawn it.
@@ -2548,7 +2637,7 @@
       amount: 2
   - type: CombatMode
   - type: Body
-    prototype: AnimalHemocyanin
+    prototype: Spider
   - type: MobThresholds
     thresholds:
       0: Alive
@@ -2566,8 +2655,6 @@
   - type: MeleeChemicalInjector
     transferAmount: 0.75
     solution: melee
-  - type: ReplacementAccent
-    accent: xeno
   - type: InteractionPopup
     successChance: 0.5
     interactSuccessString: petting-success-tarantula
@@ -2581,17 +2668,17 @@
   - type: Bloodstream
     bloodMaxVolume: 150
     bloodReagent: CopperBlood
+  - type: CanEnterPipeCrawling
+  - type: UserInterface
+    interfaces:
+      enum.DamageSelectorUiKey.Key:
+        type: DamageSelectorBoundUserInterface
+      enum.PipeCrawlingLayerUiKey.Key:
+        type: PipeCrawlingLayerBoundUserInterface
   - type: Speech
     speechVerb: Arachnid
     speechSounds: Arachnid
     allowedEmotes: ['Click', 'Chitter']
-  - type: Vocal
-    sounds:
-      Male: UnisexArachnid
-      Female: UnisexArachnid
-      Unsexed: UnisexArachnid
-  - type: TypingIndicator
-    proto: spider
   - type: Tag
     tags:
     - DoorBumpOpener
@@ -2612,7 +2699,6 @@
       groups:
         Brute: -0.07
         Burn: -0.07
-  - type: CanEnterPipeCrawling
 
 - type: entity
   parent: MobSpiderBase
@@ -2632,6 +2718,8 @@
     name: ghost-role-information-giant-spider-name
     description: ghost-role-information-giant-spider-description
     rules: ghost-role-information-giant-spider-rules
+    mindRoles:
+    - MindRoleGhostRoleTeamAntagonist
     raffle:
       settings: short
   - type: GhostTakeoverAvailable
@@ -2675,8 +2763,8 @@
 
 - type: entity
   parent:
-  - MobGiantSpider
   - MobSpiderAngryBase
+  - MobGiantSpider
   id: MobGiantSpiderAngry
 
 - type: entity
@@ -2802,6 +2890,8 @@
   - type: Tag
     tags:
     - VimPilot
+  - type: Body
+    prototype: Possum
 
 - type: entity
   name: possum
@@ -2978,11 +3068,14 @@
   - type: Tag
     tags:
     - VimPilot
+  - type: Body
+    prototype: Fox
 
 - type: entity
-  name: corgi
+  abstract: true
   parent: [SimpleMobBase, StripableInventoryBase]
-  id: MobCorgi
+  id: MobCorgiBase
+  name: corgi
   description: Finally, a space corgi!
   components:
   - type: Sprite
@@ -2994,6 +3087,7 @@
   - type: Physics
   - type: Speech
     speechVerb: Canine
+    speechSounds: Dog
   - type: Fixtures
     fixtures:
       fix1:
@@ -3020,6 +3114,22 @@
   - type: Inventory
     speciesId: dog
     templateId: pet
+  - type: InteractionPopup
+    interactSuccessString: petting-success-dog
+    interactFailureString: petting-failure-generic
+    interactSuccessSpawn: EffectHearts
+    interactSuccessSound:
+      path: /Audio/Animals/small_dog_bark_happy.ogg
+  - type: Grammar
+    attributes:
+      gender: epicene
+  - type: MobPrice
+    price: 200
+
+- type: entity
+  parent: MobCorgiBase
+  id: MobCorgi
+  components:
   - type: DamageStateVisuals
     states:
       Alive:
@@ -3032,24 +3142,13 @@
     spawned:
     - id: FoodMeat
       amount: 2
-  - type: ReplacementAccent
-    accent: dog
-  - type: InteractionPopup
-    interactSuccessString: petting-success-dog
-    interactFailureString: petting-failure-generic
-    interactSuccessSpawn: EffectHearts
-    interactSuccessSound:
-      path: /Audio/Animals/small_dog_bark_happy.ogg
-  - type: Grammar
-    attributes:
-      gender: epicene
   - type: SentienceTarget
     flavorKind: station-event-random-sentience-flavor-corgi
-  - type: MobPrice
-    price: 200
   - type: Tag
     tags:
     - VimPilot
+  - type: Body
+    prototype: Corgi
 
 - type: entity
   name: corrupted corgi
@@ -3193,8 +3292,6 @@
     spawned:
     - id: FoodMeat
       amount: 3
-  - type: ReplacementAccent
-    accent: cat
   - type: InteractionPopup
     successChance: 0.7
     interactSuccessString: petting-success-cat
@@ -3219,6 +3316,8 @@
   - type: Tag
     tags:
     - VimPilot
+  - type: Body
+    prototype: Cat
 
 - type: entity
   name: calico cat
@@ -3277,6 +3376,8 @@
     allowMovement: true
     description: ghost-role-information-SyndiCat-description
     rules: ghost-role-information-SyndiCat-rules
+    mindRoles:
+    - MindRoleGhostRoleTeamAntagonist
     raffle:
       settings: default
   - type: MeleeWeapon
@@ -3290,6 +3391,8 @@
         Slash: 6
         Piercing: 6
         Structural: 15
+  - type: Body
+    prototype: Syndiecat
 
 - type: entity
   name: space cat
@@ -3449,6 +3552,8 @@
   - type: Tag
     tags:
     - VimPilot
+  - type: Body
+    prototype: Sloth
 
 - type: entity
   name: ferret
@@ -3515,6 +3620,8 @@
   - type: Tag
     tags:
     - VimPilot
+  - type: Body
+    prototype: Ferret
 
 - type: entity
   name: hamster
@@ -3624,8 +3731,6 @@
     spawned:
     - id: FoodMeat
       amount: 1
-  - type: ReplacementAccent
-    accent: mouse
   - type: Tag
     tags:
     - VimPilot
@@ -3670,6 +3775,8 @@
   - type: FireVisuals
     sprite: Mobs/Effects/onfire.rsi
     normalState: Mouse_burning
+  - type: Body
+    prototype: Hamster
 
 - type: entity
   name: pig
@@ -3743,8 +3850,6 @@
     interactSuccessSpawn: EffectHearts
     interactSuccessSound:
       path: /Audio/Animals/pig_oink.ogg
-  - type: ReplacementAccent
-    accent: pig
   - type: SentienceTarget
     flavorKind: station-event-random-sentience-flavor-organic
   - type: NpcFactionMember
@@ -3753,6 +3858,8 @@
   - type: HTN
     rootTask:
       task: RuminantCompound
+  - type: Body
+    prototype: Pig
 
 - type: entity
   name: diona nymph
@@ -3829,11 +3936,6 @@
     speechVerb: Plant
     speechSounds: Alto
     allowedEmotes: ['Chirp']
-  - type: Vocal
-    sounds:
-      Male: UnisexDiona
-      Female: UnisexDiona
-      Unsexed: UnisexDiona
   - type: Tag
     tags:
     - DoorBumpOpener
@@ -3846,6 +3948,8 @@
     reformTime: 10
     popupText: diona-reform-attempt
     reformPrototype: MobDionaReformed
+  - type: Body
+    prototype: Dionanymph
 
 - type: entity
   parent: MobDionaNymph
@@ -3916,6 +4020,8 @@
       task: SimpleHostileCompound
   - type: Puller
     needsHands: false
+  - type: Body
+    prototype: Reindeer
 
 - type: entity
   name: reindeer doe
@@ -3948,3 +4054,64 @@
         Base: reindeer_doe_dead
       Dead:
         Base: reindeer_doe_dead
+
+- type: entity
+  parent: MobCorgiBase
+  id: MobCorgiSmart
+  name: smart corgi
+  description: An unusually smart dog.
+  components:
+  # Use corgi sprite, need to add handcuff layer
+  - type: Sprite
+    layers:
+    - map: ["enum.DamageStateVisualLayers.Base"]
+      state: corgi
+    - map: [ "enum.HumanoidVisualLayers.Handcuffs" ]
+      color: "#ffffff"
+      sprite: Objects/Misc/handcuffs.rsi # Would do a custom dog handcuff sprite but unfortunately handcuffs have their overlay baked-in to the cuff itself so this is mostly filler
+      state: body-overlay-2
+      visible: false
+  - type: UserInterface
+    interfaces:
+      enum.StrippingUiKey.Key:
+        type: StrippableBoundUserInterface
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+  # Custom inventory template
+  - type: Inventory
+    speciesId: dog
+    templateId: SmartCorgi
+    displacements:
+      belt:
+        sizeMaps:
+          32:
+            sprite: Mobs/Pets/corgi.rsi
+            state: belt_displacement
+      ears:
+        sizeMaps:
+          32:
+            sprite: Mobs/Pets/corgi.rsi
+            state: belt_displacement
+  - type: Hands # HANDS!
+  - type: Puller
+  - type: Cuffable # bad dog!
+  - type: BlockWriting # dogs can't write, paws unwieldy; mouth-writing is a myth
+  - type: Stripping
+  - type: ComplexInteraction
+  # Implement custom borgi body type
+  - type: Body
+    prototype: SmartCorgi
+  - type: RotationVisuals
+    defaultRotation: 90
+    horizontalRotation: 180
+  - type: Grammar
+    attributes:
+      gender: epicene # Gender neutral
+      proper: true
+  - type: Tag
+    tags:
+    - VimPilot
+    - CanPilot
+    - DoorBumpOpener
+  - type: StatusIcon # marks them as crew
+    bounds: -0.5,-0.5,0.5,0.5

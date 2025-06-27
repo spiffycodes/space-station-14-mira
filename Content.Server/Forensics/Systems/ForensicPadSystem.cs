@@ -1,11 +1,12 @@
-using Content.Server.Labels;
 using Content.Server.Popups;
 using Content.Shared.DoAfter;
 using Content.Shared.Examine;
 using Content.Shared.Forensics;
+using Content.Shared.Forensics.Components;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Interaction;
 using Content.Shared.Inventory;
+using Content.Shared.Labels.EntitySystems;
 
 namespace Content.Server.Forensics
 {
@@ -15,9 +16,8 @@ namespace Content.Server.Forensics
     public sealed class ForensicPadSystem : EntitySystem
     {
         [Dependency] private readonly SharedDoAfterSystem _doAfterSystem = default!;
-        [Dependency] private readonly InventorySystem _inventory = default!;
         [Dependency] private readonly PopupSystem _popupSystem = default!;
-        [Dependency] private readonly MetaDataSystem _metaData = default!;
+        [Dependency] private readonly ForensicsSystem _forensics = default!;
         [Dependency] private readonly LabelSystem _label = default!;
 
         public override void Initialize()
@@ -58,9 +58,14 @@ namespace Content.Server.Forensics
                 return;
             }
 
-            if (_inventory.TryGetSlotEntity(args.Target.Value, "gloves", out var gloves))
+            if (!_forensics.CanAccessFingerprint(args.Target.Value, out var blocker))
             {
-                _popupSystem.PopupEntity(Loc.GetString("forensic-pad-gloves", ("target", Identity.Entity(args.Target.Value, EntityManager))), args.Target.Value, args.User);
+
+                if (blocker is { } item)
+                    _popupSystem.PopupEntity(Loc.GetString("forensic-pad-no-access-due", ("entity", Identity.Entity(item, EntityManager))), args.Target.Value, args.User);
+                else
+                    _popupSystem.PopupEntity(Loc.GetString("forensic-pad-no-access"), args.Target.Value, args.User);
+
                 return;
             }
 
@@ -76,7 +81,13 @@ namespace Content.Server.Forensics
             }
 
             if (TryComp<FiberComponent>(args.Target, out var fiber))
-                StartScan(uid, args.User, args.Target.Value, component, string.IsNullOrEmpty(fiber.FiberColor) ? Loc.GetString("forensic-fibers", ("material", fiber.FiberMaterial)) : Loc.GetString("forensic-fibers-colored", ("color", fiber.FiberColor), ("material", fiber.FiberMaterial)));
+            {
+                var sample = fiber.FiberColor == null
+                    ? Loc.GetString("forensic-fibers", ("material", fiber.FiberMaterial))
+                    : Loc.GetString("forensic-fibers-colored", ("color", fiber.FiberColor), ("material", fiber.FiberMaterial));
+
+                StartScan(uid, args.User, args.Target.Value, component, sample);
+            }
         }
 
         private void StartScan(EntityUid used, EntityUid user, EntityUid target, ForensicPadComponent pad, string sample)

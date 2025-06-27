@@ -10,10 +10,12 @@
   moduleWhitelist:
     tags:
     - BorgModuleGeneric
+    - BorgModuleScience #until sciborgs are added
 
   defaultModules:
   - BorgModuleTool
-
+  - BorgModuleArtifact
+  - BorgModuleAnomaly
   radioChannels:
   - Science
 
@@ -80,8 +82,9 @@
     - BorgModuleCargo
 
   defaultModules:
-  - BorgModuleGrapplingGun
+  - BorgModuleTool
   - BorgModuleMining
+  - BorgModuleTraversal
   - BorgModuleAppraisal
 
   radioChannels:
@@ -116,8 +119,9 @@
     - BorgModuleJanitor
 
   defaultModules:
-  - BorgModuleLightReplacer
+  - BorgModuleTool
   - BorgModuleCleaning
+  - BorgModuleCustodial
 
   radioChannels:
   - Science
@@ -125,7 +129,9 @@
 
   addComponents:
   - type: Slippery
-    superSlippery: true
+    slipData:
+      requiredSlipSpeed: 1
+      superSlippery: true
   - type: Absorbent
   - type: AbsorbentToggle
   - type: Spillable
@@ -174,7 +180,10 @@
     - BorgModuleMedical
 
   defaultModules:
-  - BorgModuleTreatment
+  - BorgModuleTool
+  - BorgModuleChemical
+  - BorgModuleTopicals
+  - BorgModuleRescue
 
   radioChannels:
   - Science
@@ -221,10 +230,12 @@
     - BorgModuleService
 
   defaultModules:
+  - BorgModuleTool
   - BorgModuleMusique
   - BorgModuleService
   - BorgModuleClowning
-
+  - BorgModuleGardening
+  - BorgModuleHarvesting
   radioChannels:
   - Science
   - Service

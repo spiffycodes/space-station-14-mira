@@ -19,8 +19,8 @@
     - map: [ "enum.HumanoidVisualLayers.LArm" ]
     - map: [ "enum.HumanoidVisualLayers.RLeg" ]
     - map: [ "enum.HumanoidVisualLayers.LLeg" ]
-    - map: [ "enum.HumanoidVisualLayers.Underwear" ]
-    - map: [ "enum.HumanoidVisualLayers.Undershirt" ]
+    - map: [ "enum.HumanoidVisualLayers.UndergarmentBottom" ]
+    - map: [ "enum.HumanoidVisualLayers.UndergarmentTop" ]
     - map: ["jumpsuit"]
     - map: ["enum.HumanoidVisualLayers.LFoot"]
     - map: ["enum.HumanoidVisualLayers.RFoot"]
@@ -29,12 +29,12 @@
     - map: [ "gloves" ]
     - map: [ "shoes" ]
     - map: [ "ears" ]
-    - map: [ "outerClothing" ]
     - map: [ "eyes" ]
     - map: [ "belt" ]
     - map: [ "id" ]
-    - map: [ "neck" ]
+    - map: [ "outerClothing" ]
     - map: [ "back" ]
+    - map: [ "neck" ]
     - map: [ "enum.HumanoidVisualLayers.FacialHair" ]
     - map: [ "enum.HumanoidVisualLayers.Hair" ]
     - map: [ "enum.HumanoidVisualLayers.HeadSide" ]
@@ -56,12 +56,30 @@
   - type: DamageVisuals
     thresholds: [ 10, 20, 30, 50, 70, 100 ]
     targetLayers:
-      !type:BodyPart { type: Head, side: None }: Head
-      !type:BodyPart { type: Torso, side: None }: Chest
-      !type:BodyPart { type: Arm, side: Left }: LArm
-      !type:BodyPart { type: Arm, side: Right }: RArm
-      !type:BodyPart { type: Leg, side: Left }: LLeg
-      !type:BodyPart { type: Leg, side: Right }: RLeg
+    - bodyPart:
+        type: Head
+        side: None
+      layers: Head
+    - bodyPart:
+        type: Torso
+        side: None
+      layers: Chest
+    - bodyPart:
+        type: Arm
+        side: Left
+      layers: LArm
+    - bodyPart:
+        type: Arm
+        side: Right
+      layers: RArm
+    - bodyPart:
+        type: Leg
+        side: Left
+      layers: LLeg
+    - bodyPart:
+        type: Leg
+        side: Right
+      layers: RLeg
     damageOverlayGroups:
       Brute:
         sprite: Mobs/Effects/brute_damage.rsi
@@ -208,11 +226,6 @@
   - type: Speech
     speechSounds: Alto
   - type: DamageForceSay
-  - type: Vocal
-    sounds:
-      Male: MaleHuman
-      Female: FemaleHuman
-      Unsexed: MaleHuman
   - type: Emoting
   - type: BodyEmotes
     soundsId: GeneralBodyEmotes
@@ -319,7 +332,7 @@
     sweatHeatRegulation: 2000
     shiveringHeatRegulation: 2000
     normalBodyTemperature: 310.15
-    thermalRegulationTemperatureThreshold: 25
+    thermalRegulationTemperatureThreshold: 2
   - type: Perishable
   - type: Butcherable
     butcheringType: Spike # TODO human.
@@ -335,6 +348,84 @@
         Asphyxiation: -1.0
   - type: FireVisuals
     alternateState: Standing
+  - type: HealthAnalyzerBody
+    limbs:
+      - bodyPart:
+          type: Head
+          side: None
+        hoverSprite:
+          sprite: /Textures/Interface/health_analyzer_body.rsi
+          state: head-hover
+        selectedSprite:
+          sprite: /Textures/Interface/health_analyzer_body.rsi
+          state: head
+      - bodyPart:
+          type: Torso
+          side: None
+        hoverSprite:
+          sprite: /Textures/Interface/health_analyzer_body.rsi
+          state: torso-hover
+        selectedSprite:
+          sprite: /Textures/Interface/health_analyzer_body.rsi
+          state: torso
+      - bodyPart:
+          type: Arm
+          side: Left
+        hoverSprite:
+          sprite: /Textures/Interface/health_analyzer_body.rsi
+          state: l_arm-hover
+        selectedSprite:
+          sprite: /Textures/Interface/health_analyzer_body.rsi
+          state: l_arm
+      - bodyPart:
+          type: Arm
+          side: Right
+        hoverSprite:
+          sprite: /Textures/Interface/health_analyzer_body.rsi
+          state: r_arm-hover
+        selectedSprite:
+          sprite: /Textures/Interface/health_analyzer_body.rsi
+          state: r_arm
+      - bodyPart:
+          type: Leg
+          side: Left
+        hoverSprite:
+          sprite: /Textures/Interface/health_analyzer_body.rsi
+          state: l_leg-hover
+        selectedSprite:
+          sprite: /Textures/Interface/health_analyzer_body.rsi
+          state: l_leg
+      - bodyPart:
+          type: Leg
+          side: Right
+        hoverSprite:
+          sprite: /Textures/Interface/health_analyzer_body.rsi
+          state: r_leg-hover
+        selectedSprite:
+          sprite: /Textures/Interface/health_analyzer_body.rsi
+          state: r_leg
+  - type: SurgeryReceiverBody
+    surgeries:
+      - bodyPart: !type:BodyPart { type: Head, side: None }
+        surgeries:
+          availableSurgeries:
+          - LimbReplacement
+      - bodyPart: !type:BodyPart { type: Arm, side: Left }
+        surgeries:
+          availableSurgeries:
+          - LimbReplacement
+      - bodyPart: !type:BodyPart { type: Arm, side: Right }
+        surgeries:
+          availableSurgeries:
+          - LimbReplacement
+      - bodyPart: !type:BodyPart { type: Leg, side: Left }
+        surgeries:
+          availableSurgeries:
+          - LimbReplacement
+      - bodyPart: !type:BodyPart { type: Leg, side: Right }
+        surgeries:
+          availableSurgeries:
+          - LimbReplacement
 
 - type: entity
   save: false
@@ -361,8 +452,8 @@
     - map: [ "enum.HumanoidVisualLayers.LArm" ]
     - map: [ "enum.HumanoidVisualLayers.RLeg" ]
     - map: [ "enum.HumanoidVisualLayers.LLeg" ]
-    - map: [ "enum.HumanoidVisualLayers.Underwear" ]
-    - map: [ "enum.HumanoidVisualLayers.Undershirt" ]
+    - map: [ "enum.HumanoidVisualLayers.UndergarmentBottom" ]
+    - map: [ "enum.HumanoidVisualLayers.UndergarmentTop" ]
     - map: ["jumpsuit"]
     - map: ["enum.HumanoidVisualLayers.LFoot"]
     - map: ["enum.HumanoidVisualLayers.RFoot"]
@@ -376,12 +467,12 @@
     - map: [ "gloves" ]
     - map: [ "shoes" ]
     - map: [ "ears" ]
-    - map: [ "outerClothing" ]
     - map: [ "eyes" ]
     - map: [ "belt" ]
     - map: [ "id" ]
-    - map: [ "neck" ]
+    - map: [ "outerClothing" ]
     - map: [ "back" ]
+    - map: [ "neck" ]
     - map: [ "enum.HumanoidVisualLayers.FacialHair" ]
     - map: [ "enum.HumanoidVisualLayers.Hair" ]
     - map: [ "enum.HumanoidVisualLayers.HeadSide" ]

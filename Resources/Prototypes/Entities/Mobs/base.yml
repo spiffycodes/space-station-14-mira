@@ -8,6 +8,7 @@
   - type: Sprite
     noRot: true
     drawdepth: Mobs
+  - type: MobCollision
   - type: Physics
     bodyType: KinematicController
   - type: Fixtures
@@ -145,16 +146,48 @@
   - type: CombatMode
   - type: DamagePartSelector
     selectableParts:
-      !type:BodyPart { type: Head, side: None }: { sprite: Interface/Actions/zone_sel.rsi, state: head }
-      !type:BodyPart { type: Arm, side: Left }: { sprite: Interface/Actions/zone_sel.rsi, state: larm }
-      !type:BodyPart { type: Leg, side: Left }: { sprite: Interface/Actions/zone_sel.rsi, state: lleg }
-      !type:BodyPart { type: Torso, side: None }: { sprite: Interface/Actions/zone_sel.rsi, state: torso }
-      !type:BodyPart { type: Leg, side: Right }: { sprite: Interface/Actions/zone_sel.rsi, state: rleg }
-      !type:BodyPart { type: Arm, side: Right }: { sprite: Interface/Actions/zone_sel.rsi, state: rarm }
+    - bodyPart:
+        type: Head
+        side: None
+      sprite:
+        sprite: Interface/Actions/zone_sel.rsi
+        state: head
+    - bodyPart:
+        type: Arm
+        side: Left
+      sprite:
+        sprite: Interface/Actions/zone_sel.rsi
+        state: larm
+    - bodyPart:
+        type: Leg
+        side: Left
+      sprite:
+        sprite: Interface/Actions/zone_sel.rsi
+        state: lleg
+    - bodyPart:
+        type: Torso
+        side: None
+      sprite:
+        sprite: Interface/Actions/zone_sel.rsi
+        state: torso
+    - bodyPart:
+        type: Leg
+        side: Right
+      sprite:
+        sprite: Interface/Actions/zone_sel.rsi
+        state: rleg
+    - bodyPart:
+        type: Arm
+        side: Right
+      sprite:
+        sprite: Interface/Actions/zone_sel.rsi
+        state: rarm
   - type: UserInterface
     interfaces:
       enum.DamageSelectorUiKey.Key:
         type: DamageSelectorBoundUserInterface
+      enum.StrippingUiKey.Key:
+        type: StrippableBoundUserInterface
   - type: MeleeWeapon
     hidden: true
     soundHit:
@@ -188,7 +221,7 @@
     sweatHeatRegulation: 2000
     shiveringHeatRegulation: 2000
     normalBodyTemperature: 310.15
-    thermalRegulationTemperatureThreshold: 25
+    thermalRegulationTemperatureThreshold: 2
   - type: MovedByPressure
 
 # Used for mobs that require regular atmospheric conditions.
@@ -204,7 +237,7 @@
     sweatHeatRegulation: 500
     shiveringHeatRegulation: 500
     normalBodyTemperature: 310.15
-    thermalRegulationTemperatureThreshold: 25
+    thermalRegulationTemperatureThreshold: 2
   - type: Temperature
     heatDamageThreshold: 325
     coldDamageThreshold: 260
@@ -251,6 +284,7 @@
     damageRecovery:
       types:
         Asphyxiation: -1.0
+  - type: Cougher
 
 # Used for mobs that have a bloodstream
 - type: entity

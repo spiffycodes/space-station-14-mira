@@ -1,5 +1,6 @@
 - type: entity
   id: BaseStunbaton
+  abstract: true
   components:
   - type: Stunbaton
     energyPerUse: 50
@@ -19,7 +20,9 @@
     sprite: Objects/Weapons/Melee/stunbaton.rsi
     layers:
     - state: stunbaton_off
-      map: [ "enum.ToggleVisuals.Layer" ]
+      map: [ "enum.ToggleableVisuals.Layer" ]
+  - type: Stunbaton
+    energyPerUse: 50
   - type: ItemToggle
     predictable: false
     soundActivate:
@@ -34,6 +37,9 @@
       path: /Audio/Machines/button.ogg
       params:
         variation: 0.250
+  - type: ItemTogglePrefix
+    prefixOn: on
+    prefixOff: off
   - type: ItemToggleMeleeWeapon
     activatedDamage:
       types:
@@ -45,7 +51,9 @@
         Blunt: 7
     bluntStaminaDamageFactor: 2.0
     angle: 60
-    animation: WeaponArcSlash
+    animation: WeaponArcThrust
+  - type: StaminaDamageOnHit
+    damage: 35
     sound: /Audio/Weapons/egloves.ogg
   - type: StaminaDamageOnCollide
     damage: 35
@@ -65,8 +73,8 @@
   - type: Appearance
   - type: GenericVisualizer
     visuals:
-     enum.ToggleVisuals.Toggled:
-        enum.ToggleVisuals.Layer:
+     enum.ToggleableVisuals.Enabled:
+        enum.ToggleableVisuals.Layer:
           True: {state: stunbaton_on}
           False: {state: stunbaton_off}
   - type: StaticPrice
@@ -100,13 +108,13 @@
   name: telescopic baton
   parent: [BaseItem, BaseCommandContraband]
   id: Telescopicbaton
-  description: A self-defense weapon designed for the head staff of NanoTrasen's many stations. It's easier to handle and carry but less robust than the standart-issue stun batons.
+  description: A self-defense weapon designed for the head staff of NanoTrasen's many stations. It's easier to handle and carry but less robust than the standard-issue stun batons.
   components:
   - type: Sprite
     sprite: Objects/Weapons/Melee/telebaton.rsi
     layers:
     - state: telebaton-icon
-      map: [ "enum.ToggleVisuals.Layer" ]
+      map: [ "enum.ToggleableVisuals.Layer" ]
   - type: ItemToggle
     predictable: false
     soundActivate:
@@ -151,12 +159,12 @@
   - type: Appearance
   - type: GenericVisualizer
     visuals:
-     enum.ToggleVisuals.Toggled:
-        enum.ToggleVisuals.Layer:
+      enum.ToggleableVisuals.Enabled:
+        enum.ToggleableVisuals.Layer:
           True: {state: telebaton-on}
           False: {state: telebaton-icon}
-  - type: ToggleableLightVisuals
-    spriteLayer: shield
+  - type: ToggleableVisuals
+    spriteLayer: enum.ToggleableVisuals.Layer
     inhandVisuals:
       left:
         - state: inhand-left-shield
@@ -167,7 +175,7 @@
 
 - type: entity
   name: truncheon
-  parent: [BaseItem, BaseRestrictedContraband]
+  parent: [BaseItem, BaseSecurityContraband]
   id: Truncheon
   description: A rigid, steel-studded baton, meant to harm.
   components:
@@ -220,7 +228,6 @@
     - type: Flash
     - type: LimitedCharges
       maxCharges: 5
-      charges: 5
     - type: MeleeWeapon
       wideAnimationRotation: 180
       damage:
@@ -256,11 +263,10 @@
   components:
     - type: LimitedCharges
       maxCharges: 2
-      charges: 2
 
 - type: entity
   name: portable flasher
-  parent: [BaseMachine, BaseRestrictedContraband]
+  parent: [BaseMachine, BaseSecurityContraband]
   id: PortableFlasher
   description: An ultrabright flashbulb with a proximity trigger, useful for making an area security-only.
   components:

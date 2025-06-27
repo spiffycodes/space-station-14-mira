@@ -11,6 +11,14 @@
         children:
         - id: Lighter
         - id: CigCartonBlue
+      # googly eyes
+      - !type:GroupSelector
+        children:
+        - id: ClothingEyesGooglyEyesNormal
+        - id: ClothingEyesGooglyEyesAngry
+        - id: ClothingEyesGooglyEyesNormalCrazy
+        - id: ClothingEyesGooglyEyesAngryCrazy
+        weight: 0.5
       # Gar glasses
       - !type:GroupSelector
         children:
@@ -90,7 +98,7 @@
       - id: ClothingHeadHatCowboyRed
     # Uncommon Group
     - !type:GroupSelector
-      weight: 23
+      weight: 30
       children:
       - id: ClothingNeckCloakHerald
       - id: ClothingHeadHelmetTemplar
@@ -104,6 +112,7 @@
         - id: ClothingNeckCloakGoliathCloak
         - id: ClothingNeckCloakAce
         - id: ClothingNeckCloakAro
+        - id: ClothingNeckCloakAroace
         - id: ClothingNeckCloakBi
         - id: ClothingNeckCloakIntersex
         - id: ClothingNeckCloakLesbian
@@ -141,14 +150,20 @@
       - !type:GroupSelector
         children:
         - id: ClothingNeckLGBTPin
+        - id: ClothingNeckAllyPin
         - id: ClothingNeckAromanticPin
         - id: ClothingNeckAsexualPin
+        - id: ClothingNeckAroacePin
         - id: ClothingNeckBisexualPin
         - id: ClothingNeckGayPin
         - id: ClothingNeckIntersexPin
         - id: ClothingNeckLesbianPin
         - id: ClothingNeckNonBinaryPin
         - id: ClothingNeckPansexualPin
+        - id: ClothingNeckPluralPin
+        - id: ClothingNeckOmnisexualPin
+        - id: ClothingNeckGenderqueerPin
+        - id: ClothingNeckGenderfluidPin
         - id: ClothingNeckTransPin
         - id: ClothingNeckGodoPin
         - id: ClothingNeckAutismPin
@@ -280,6 +295,7 @@
     - !type:GroupSelector
       weight: 2
       children:
+      - id: Binoculars
       - id: LanternFlash
       - id: PowerCellHigh
       - id: NetProbeCartridge
@@ -292,6 +308,7 @@
       - id: DrinkMopwataBottleRandom
       - id: SpectralLocator
       - id: LidSalami
+      - id: FigurineCase
         weight: 0.05
 
 - type: entity
@@ -350,6 +367,7 @@
       - id: Shiv
       - id: SawImprov
       - id: HydroponicsToolMiniHoe
+      - id: ClothingHandsKnuckleDusters
 
 - type: entity
   name: Maint Loot Spawner
@@ -383,3 +401,32 @@
         - Spaceshroom
       chance: 0.6
       offset: 0.0
+
+
+- type: entityTable
+  id: InsulsTable
+  table: !type:GroupSelector
+    children:
+    - id: ClothingHandsGlovesColorYellowBudget # budget insuls
+      weight: 85
+    - id: ClothingHandsGlovesColorYellow # true insuls
+      weight: 10
+    - id: ClothingHandsGlovesFingerlessInsulated # fingerless
+      weight: 4
+    - id: ClothingHandsGlovesConducting # conducting
+      weight: 1
+
+- type: entity
+  name: Maint Loot Spawner
+  id: MaintenanceInsulsSpawner
+  suffix: Insuls, safe
+  parent: MarkerBase
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: Clothing/Hands/Gloves/Color/yellow.rsi
+      state: icon
+  - type: EntityTableSpawner
+    table: !type:NestedSelector
+      tableId: InsulsTable

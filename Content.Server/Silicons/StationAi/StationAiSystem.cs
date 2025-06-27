@@ -2,6 +2,7 @@ using System.Linq;
 using Content.Server.Chat.Managers;
 using Content.Server.Electrocution;
 using Content.Server.Chat.Systems;
+using Content.Server.Explosion.EntitySystems;
 using Content.Shared.Chat;
 using Content.Shared.Mind;
 using Content.Shared.Roles;
@@ -31,6 +32,7 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
         InitializePower();
         InitializeShunting();
 
+        SubscribeLocalEvent<StationAiAnnounceOnTriggerComponent, TriggerEvent>(OnAnnounceTrigger);
         SubscribeLocalEvent<ElectrifiedComponent, StationAiElectrifiedEvent>(OnElectrified);
         SubscribeLocalEvent<ExpandICChatRecipientsEvent>(OnExpandICChatRecipients);
     }
@@ -50,13 +52,13 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
         var query = EntityManager.EntityQueryEnumerator<StationAiCoreComponent, TransformComponent>();
         while (query.MoveNext(out var ent, out var entStationAiCore, out var entXform))
         {
-            var stationAiCore = new Entity<StationAiCoreComponent>(ent, entStationAiCore);
+            var stationAiCore = new Entity<StationAiCoreComponent?>(ent, entStationAiCore);
 
-            if (!TryGetInsertedAI(stationAiCore, out var insertedAi) || !TryComp(insertedAi, out ActorComponent? actor))
-                return;
+            if (!TryGetHeld(stationAiCore, out var insertedAi) || !TryComp(insertedAi, out ActorComponent? actor))
+                continue;
 
-            if (stationAiCore.Comp.RemoteEntity == null || stationAiCore.Comp.Remote)
-                return;
+            if (stationAiCore.Comp?.RemoteEntity == null || stationAiCore.Comp.Remote)
+                continue;
 
             var xform = Transform(stationAiCore.Comp.RemoteEntity.Value);
 
@@ -69,6 +71,18 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
 
             ev.Recipients.TryAdd(actor.PlayerSession, new ICChatRecipientData(range, false));
         }
+    }
+
+    private void OnAnnounceTrigger(Entity<StationAiAnnounceOnTriggerComponent> ent, ref TriggerEvent args)
+    {
+        if (!TryComp<StationAiCoreComponent>(ent.Owner, out var stationAiCore))
+            return;
+
+        if (!TryGetInsertedAI((ent.Owner, stationAiCore), out var insertedAi))
+            return;
+
+        AnnounceAi(insertedAi.Value, Loc.GetString(ent.Comp.Message), ent.Comp.Sound);
+        args.Handled = true;
     }
 
     public override bool SetVisionEnabled(Entity<StationAiVisionComponent> entity, bool enabled, bool announce = false)

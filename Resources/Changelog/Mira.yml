@@ -1217,3 +1217,599 @@ Entries:
     type: Add
   id: 179
   time: '2025-02-22T20:00:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Surgery is no longer a week away
+    type: Add
+  id: 180
+  time: '2025-02-25T16:40:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Interacting with someone lying down works again
+    type: Fix
+  - message: The server no longer crashes when restarting the round
+    type: Fix
+  id: 181
+  time: '2025-02-26T17:50:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Torsos and heads dead threshold now get set to the bodies overall dead threshold
+    type: Tweak
+  id: 182
+  time: '2025-02-27T04:10:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Surgery can be performed on limbs that have been removed
+    type: Tweak
+  id: 183
+  time: '2025-02-27T07:40:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Organs now rot when not in an alive body or cold
+    type: Add
+  - message: Rotting lungs cause you to cough more often and collapse when fully rotten
+    type: Add
+  - message: Hearts beating can be toggled in hands causing gasping
+    type: Add
+  - message: Hearts stop beating when rotten
+    type: Add
+  - message: Poison damage on a body is now contained on the liver
+    type: Tweak
+  - message: As a liver rots it deals more poison damage and slows down metabolizing
+    type: Add
+  - message: As an appendix rots it deals poison damage
+    type: Add
+  - message: A rotting stomach causes an increasing probability of vomiting
+    type: Add
+  id: 184
+  time: '2025-03-01T13:50:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Nukes the station AI has armed now get disarmed when they are placed into an intelicard
+    type: Tweak
+  - message: When the station AI arms a nuke it adds an additonal minute to the timer
+    type: Tweak
+  - message: The round ends when a nuke the AI has armed explodes
+    type: Tweak
+  id: 185
+  time: '2025-03-04T01:10:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: The chance of coughing has been drasticly reduced
+    type: Tweak
+  id: 186
+  time: '2025-03-04T01:15:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Organs only rot if the body is also rotting
+    type: Tweak
+  id: 187
+  time: '2025-03-04T04:05:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: You can order a random dead species body from cargo
+    type: Add
+  id: 188
+  time: '2025-03-04T08:05:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Pipes can switch to different layers
+    type: Add
+  - message: Manifolds can merge multiple pipe layers into one
+    type: Add
+  id: 189
+  time: '2025-03-12T18:05:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Super slipery stuff, such as lube, no longer have a grace period
+    type: Tweak
+  id: 190
+  time: '2025-03-13T15:45:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Organs no longer rot when they are cold
+    type: Tweak
+  id: 191
+  time: '2025-03-13T16:05:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Diona now have a heart
+    type: Fix
+  id: 192
+  time: '2025-03-13T16:25:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Ghosts now look like their past body
+    type: Add
+  id: 193
+  time: '2025-03-15T20:55:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Clicking on pipes to change its layer has been removed
+    type: Remove
+  - message: Changing a pipes layer now takes into account the pipes direction
+    type: Fix
+  id: 194
+  time: '2025-03-17T14:35:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Organ rotting damage doesn't instantly start giving damage
+    type: Tweak
+  id: 195
+  time: '2025-03-17T15:00:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Hostile shuttles now have a minimum pop of 20 to spawn
+    type: Tweak
+  id: 196
+  time: '2025-03-17T15:10:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: New medical scanner UI
+    type: Add
+  id: 197
+  time: '2025-03-19T20:00:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Limbs now properly flash green when they cant be damaged anymore
+    type: Fix
+  id: 198
+  time: '2025-03-20T17:50:00.0000000+00:00'
+- author: SentientSalad
+  changes:
+  - message: Helmet armor now match their corresponding torso armor
+    type: Tweak
+  - message: Reduced the warden hardsuits speed penalty
+    type: Tweak
+  id: 199
+  time: '2025-03-20T18:00:00.0000000+00:00'
+- author: SentientSalad
+  changes:
+  - message: Added the syndie riot helmet to the uplink
+    type: Add
+  id: 200
+  time: '2025-03-20T21:40:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Disabler and energy bolts can go through windows and grills
+    type: Tweak
+  id: 201
+  time: '2025-03-20T22:20:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Parrots now mimic what they hear
+    type: Add
+  id: 202
+  time: '2025-03-22T05:30:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Poly can now learn phrases they hear from the radio
+    type: Add
+  id: 203
+  time: '2025-03-23T21:30:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Unequiping clothing now uniquips any items that depended on it
+    type: Fix
+  id: 204
+  time: '2025-03-24T01:30:00.0000000+00:00'
+- author: Mehnix
+  changes:
+  - message: Added spesoe (a mutation of aloe, chopping it gives an amount of spesos equal to the plant's potency, contains a small amount of happiness)
+    type: Add
+  - message: Added Voltato (a mutation of potatoes, acts as a battery with 500 charge, between a small and medium battery. Contains sulphuric acid and zinc)
+    type: Add
+  - message: Added Chaos Berries (a mutation of Berries, when harvested provides a pod that can be opened to obtain a berry. The berry has 5-10u of a random chemical pulling from the same list random plant mutation chemicals does)
+    type: Add
+  - message: Added Plasteelcap (a mutation of Steelcap, can be chopped up for plasteel)
+    type: Add
+  - message: Added Unstable Bananium (a mutation of Bananas. Harvested produce is radioactive and unstable, will degrade after 20 seconds into bananium. If grinded before that provides Unstable Mutagen, or radium if juiced)
+    type: Add
+  - message: Added Sunflower (new plant, found in seed vendor. Contains oil. Can be butchered to make into a sunflower ring hat)
+    type: Add
+  - message: Added Lampflower (a mutation of Sunflowers. Produce naturally glows, but rots after 15 minutes to prevent point light spam. Can be butchered to make a lampflower ring hat that also glows, although less so. Contains new Reagent Solar Oil)
+    type: Add
+  - message: Added Voidflower (a mutation of Sunflowers. Contains new Reagent Void Oil. Can be butchered to make a voidflower ring that hides identity and looks spooky)
+    type: Add
+  - message: Added Coconut (new plant, found in exotic seeds crate. Acts as a liquid container and can be syringed out of or injected into, holds 30u and naturally contains coconut water. Butchering makes a sliced coconut that can be drunk out of like a cup. Liquids injected into coconuts are retained when sliced, but not when grinded.
+    type: Add
+  - message: Added Cryoconut (a mutation of Coconuts. Acts as a liquid container that also prevents reactions, like a cryo beaker. Can be syringed out of or injected into, holds 20u and naturally contains cryoxadone. Fiber also contains a very small amount of fresium. Cut Cryoconut doesn't retain no-reaction quality.
+    type: Add
+  id: 205
+  time: '2025-03-28T23:00:00.0000000+00:00'
+- author: Mehnix
+  changes:
+  - message: Void oil now evaporates, removes less blood but metabolises slower
+    type: Tweak
+  id: 206
+  time: '2025-03-31T14:00:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Crew monitoring console now properly reports the health of players
+    type: Fix
+  id: 207
+  time: '2025-04-06T15:00:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Reagents that require a health threshold (such as tric) now work on mobs
+    type: Fix
+  id: 208
+  time: '2025-04-06T15:10:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Limb damage can no longer go negative
+    type: Fix
+  id: 209
+  time: '2025-04-06T17:00:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Simple mobs can now be stripped
+    type: Fix
+  id: 210
+  time: '2025-04-07T00:00:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Mobs now retaliate to damage again
+    type: Fix
+  - message: Diona now ignite on heat damage again
+    type: Fix
+  - message: Doafters now cancel on taking damage
+    type: Fix
+  - message: Damage slowdown works again
+    type: Fix
+  - message: Taking damage now forces you to speak again
+    type: Fix
+  id: 211
+  time: '2025-04-07T01:00:00.0000000+00:00'
+- author: Anurath
+  changes:
+  - message: Most animals now have proper bodies to target and damage
+    type: Fix
+  id: 212
+  time: '2025-04-07T14:20:00.0000000+00:00'
+- author: SentientSalad
+  changes:
+  - message: Readded mira undergarments
+    type: Add
+  id: 213
+  time: '2025-04-13T14:20:00.0000000+00:00'
+- author: Anurath
+  changes:
+  - message: The handheld R&D tablet has been added to the RDs locker
+    type: Add
+  id: 214
+  time: '2025-04-07T14:30:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: New medkit sprites
+    type: Add
+  id: 215
+  time: '2025-04-07T14:30:00.0000000+00:00'
+- author: Mehnix
+  changes:
+  - message: Solar oil's glowing effect is shortened by charcoal, and blows up if it reacts with void oil
+    type: Add
+  - message: Frost oil can now solidify plasma
+    type: Add
+  - message: Plants that could be eaten for an item can now be butchered for the same item
+    type: Tweak
+  - message: Swabbing takes 1 second rather than 2.
+    type: Tweak
+  - message: Agrichem can now make up to 30u of Unstable Mutagen rather than 15u
+    type: Tweak
+  - message: Towercap, Steelcap, Plasteelcap, Cotton, Pyrotton, and Papercane chopped product numbers scale with the potency of the produce to make up for them not having any reagents that would have scaled instead.
+    type: Tweak
+  - message: Towercap, Steelcap, Plasteelcap, and Papercane now automatically stack on being chopped
+    type: Tweak
+  - message: The Botanist's Scythe is now sharper
+    type: Tweak
+  - message: You can no longer attempt to use any item on a sliceable food.
+    type: Fix
+  id: 216
+  time: '2025-04-07T21:00:00.0000000+00:00'
+- author: SillyAmy
+  changes:
+  - message: Packed has started to have its decals overhauled
+    type: Add
+  id: 217
+  time: '2025-04-16T06:40:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Cyborgs can now sync to an AI
+    type: Add
+  - message: Cyborgs laws can be synced to its linked ai
+    type: Add
+  - message: Removed resetting laws from the cyborg module ui
+    type: Remove
+  id: 218
+  time: '2025-04-16T06:45:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Pusling the sync wire skips the radial menu if there is only one AI
+    type: Add
+  - message: Pulsing the law wire automatically syncs the slaves laws with its master
+    type: Add
+  id: 219
+  time: '2025-04-16T21:30:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Beepsky now speaks when arresting someone
+    type: Add
+  id: 220
+  time: '2025-04-17T01:30:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Added the Ai command module to remotely control bots
+    type: Add
+  id: 221
+  time: '2025-04-18T05:30:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Accents are stored on the tongue
+    type: Add
+  - message: You need a tongue to taste and speak
+    type: Add
+  id: 222
+  time: '2025-04-18T23:00:00.0000000+00:00'
+- author: SillyAmy
+  changes:
+  - message: Added 4 new posters
+    type: Add
+  id: 223
+  time: '2025-04-21T10:30:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Emote sounds now properly update for adding a body part that contains a tongue
+    type: Fix
+  id: 224
+  time: '2025-04-21T11:20:00.0000000+00:00'
+- author: Ian321, Mehnix
+  changes:
+  - message: Plant Analyser, available roundstart in nutrivendor and botanist lockers, and at an autolathe. Rejoice.
+    type: Add
+  - message: Researchable PlantScan Cartridge, to bring plant-scanning to the PDA
+    type: Add
+  - message: Botany tools now available at an autolathe
+    type: Add
+  id: 225
+  time: '2025-04-21T16:00:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Engineering goggles now have a screen shader when worn
+    type: Add
+  - message: Engineering goggles can see structures and tiles behind walls
+    type: Add
+  id: 226
+  time: '2025-04-22T15:20:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Engineering goggles now properly render based on drawdepth
+    type: Fix
+  - message: Engineering goggles shows sprite rotations correctly
+    type: Fix
+  - message: Engineering goggles no longer hide wall mounted objects
+    type: Fix
+  - message: Engineering goggles only show the xray in the direction the user is facing
+    type: Tweak
+  id: 227
+  time: '2025-04-23T14:50:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: The engineering goggles xray no longer has a scrolling effect
+    type: Tweak
+  id: 228
+  time: '2025-04-24T16:40:00.0000000+00:00'
+- author: SillyAmy
+  changes:
+  - message: Donk Co vending machine can spawn as a random vending machine
+    type: Add
+  id: 229
+  time: '2025-04-24T23:30:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Added washing machines
+    type: Add
+  - message: You can wash crayons with basic clothing to dye it
+    type: Add
+  id: 230
+  time: '2025-04-27T19:50:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Beepsky will no longer arrest you for having job specific contraband
+    type: Fix
+  id: 231
+  time: '2025-04-27T22:00:00.0000000+00:00'
+- author: SillyAmy
+  changes:
+  - message: Added the double bladed toy sword
+    type: Add
+  - message: Toy sword can be purchased in the uplink for 3tc and the double bladed toy sword for 6tc
+    type: Add
+  id: 232
+  time: '2025-04-29T16:10:00.0000000+00:00'
+- author: SillyAmy
+  changes:
+  - message: Added googly eyes as maints loot
+    type: Add
+  id: 233
+  time: '2025-04-30T15:00:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Washing machines now leave forensics for stuff being washed
+    type: Add
+  id: 234
+  time: '2025-04-30T16:00:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Jumpsuits and jumpskirts now get stained when slipping or getting liquid poured over them
+    type: Add
+  id: 235
+  time: '2025-05-01T17:10:00.0000000+00:00'
+- author: SillyAmy
+  changes:
+  - message: Added water balloons to the toy box
+    type: Add
+  id: 236
+  time: '2025-05-02T16:10:00.0000000+00:00'
+- author: Mehnix
+  changes:
+  - message: Alt firing with guns causes melee attacks
+    type: Add
+  id: 237
+  time: '2025-05-04T20:00:00.0000000+00:00'
+- author: Mehnix
+  changes:
+  - message: Crushers and Crusher Glaives now heal their full amount again.
+    type: Fix
+  - message: Goliaths are no longer immortal, but you also can't butcher them alive.
+    type: Fix
+  - message: Goliaths can bleed, and their tentacles stun slightly slower.
+    type: Tweak
+  id: 238
+  time: '2025-05-12T16:40:00.0000000+00:00'
+- author: Mehnix
+  changes:
+  - message: Cryoconuts can survive in space
+    type: Tweak
+  - message: Spesoes can be cut by anything sharp
+    type: Tweak
+  - message: Lampflowers rot faster
+    type: Tweak
+  - message: Non-Food produce can be cut faster
+    type: Tweak
+  - message: Non-Food Produce can't be cut with any item
+    type: Fix
+  id: 239
+  time: '2025-05-12T16:45:00.0000000+00:00'
+- author: SillyAmy
+  changes:
+  - message: Added figurine case to maints loot
+    type: Add
+  id: 240
+  time: '2025-05-12T16:50:00.0000000+00:00'
+- author: SillyAmy
+  changes:
+  - message: Added 15 valuable rare minifigures
+    type: Add
+  id: 241
+  time: '2025-05-12T16:55:00.0000000+00:00'
+- author: SillyAmy
+  changes:
+  - message: Added more reagent slimes
+    type: Add
+  id: 242
+  time: '2025-05-14T16:45:00.0000000+00:00'
+- author: SentientSalad
+  changes:
+  - message: AI now gets alerted to movement inside its core
+    type: Add
+  id: 243
+  time: '2025-05-14T16:50:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Rewritten how emotes stored on tongues and body parts work
+    type: Fix
+  id: 244
+  time: '2025-05-14T23:00:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: The AI now has a UI to see where its synced slaves are located
+    type: Add
+  id: 245
+  time: '2025-05-15T10:45:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: AI modules now have unique icons
+    type: Add
+  id: 246
+  time: '2025-05-27T16:25:00.0000000+00:00'
+- author: Mehnix
+  changes:
+  - message: Added Sparks map to rotation
+    type: Add
+  id: 247
+  time: '2025-05-31T21:15:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Removed reach from rotation (again)
+    type: Add
+  id: 248
+  time: '2025-05-31T21:20:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Sparks can now FTL
+    type: Add
+  id: 249
+  time: '2025-06-02T17:10:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Added MOD suits as an admeme item
+    type: Add
+  id: 250
+  time: '2025-06-02T18:00:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Reverted morph pending a rewrite
+    type: Remove
+  - message: Removed buggy humanoid ghosts
+    type: Remove
+  - message: Shuttle ordering has been reworked so they dock at the ATS
+    type: Add
+  - message: Removed telepads
+    type: Remove
+  - message: Removed AI screen loadouts
+    type: Remove
+  id: 251
+  time: '2025-06-08T08:00:00.0000000+00:00'
+- author: Wudanty
+  changes:
+  - message: Changed wizard pop requirement to 25 players
+    type: Tweak
+  id: 252
+  time: '2025-06-09T18:20:00.0000000+00:00'
+- author: Catazeus
+  changes:
+  - message: Spaceshrooms are now farmable at hydroponic trays
+    type: Add
+  id: 253
+  time: '2025-06-14T21:20:00.0000000+00:00'
+- author: Doctor-Cpu
+  changes:
+  - message: Pipe crawling now randomly plays a sound
+    type: Add
+  - message: Pipe crawling now shows the character for easier navigation
+    type: Add
+  - message: Pipe crawling no longer crashes with multiple pipe layers
+    type: Fix
+  - message: Pipe crawling now only shows the current pipe net rather than every subfloor object
+    type: Tweak
+  - message: Pipe crawling is now junction based. Pressing a movement key brings you to the next junction or exit
+    type: Tweak
+  id: 254
+  time: '2025-06-16T17:15:00.0000000+00:00'
+- author: Mehnix
+  changes:
+  - message: "'Further Knowledge' Tier 4 research, to unlock RND Server boards."
+    type: Add
+  - message: Consolidated some researches to make science smoother
+    type: Tweak
+  - message: Nanotransen's Byzantine bureaucracy may now randomly fund some or all of the station's departments for reasons unknowable
+    type: Add
+  id: 255
+  time: '2025-06-26T22:40:00.0000000+00:00'
+- author: Catazeus
+  changes:
+  - message: Add sustenance restock box and ability to order it. No more hungry prisoners
+    type: Add
+  id: 256
+  time: '2025-06-26T23:00:00.0000000+00:00'
+- author: SillyAmy
+  changes:
+  - message: Add the TBH creature and clownothing plushies
+    type: Add
+  - message: Inhands for Mira plushies
+    type: Add
+  - message: Mira plushies can be worn on the head
+    type: Add
+  id: 257
+  time: '2025-06-26T23:20:00.0000000+00:00'

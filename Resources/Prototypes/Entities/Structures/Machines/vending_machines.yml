@@ -36,6 +36,15 @@
         density: 200
   - type: Destructible
     thresholds:
+    - trigger: # Excess damage, don't do anything
+        !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
     - trigger:
         !type:DamageTrigger
         damage: 100
@@ -43,20 +52,6 @@
       - !type:DoActsBehavior
         acts: ["Breakage"]
       - !type:EjectVendorItems
-    - trigger:
-        !type:DamageTrigger
-        damage: 200
-      behaviors:
-      - !type:SpawnEntitiesBehavior
-        spawn:
-          SheetSteel1:
-            min: 1
-            max: 1
-      - !type:DoActsBehavior
-        acts: [ "Destruction" ]
-      - !type:PlaySoundBehavior
-        sound:
-          collection: MetalGlassBreak
   - type: Repairable
     doAfterDelay: 8
   - type: ActivatableUI
@@ -78,6 +73,9 @@
   - type: Speech
     speechVerb: Robotic
     speechSounds: Vending
+  - type: SpookySpeaker
+    messageSet: SpookySpeakerMessagesGeneric
+    speakChance: 0.2
   - type: IntrinsicRadioReceiver
   - type: IntrinsicRadioTransmitter
     channels:
@@ -139,7 +137,6 @@
     pack: CondimentVendAds
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
-  - type: Speech
   - type: Transform
     noRot: false
 
@@ -158,7 +155,6 @@
     pack: AmmoVendAds
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
-  - type: Speech
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/ammo.rsi
     layers:
@@ -187,7 +183,6 @@
     pack: BoozeOMatAds
   - type: SpeakOnUIClosed
     pack: BoozeOMatGoodbyes
-  - type: Speech
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/boozeomat.rsi
     layers:
@@ -222,7 +217,6 @@
     pack: BruiseOMatAds
   - type: SpeakOnUIClosed
     pack: BruiseOMatGoodbyes
-  - type: Speech
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/bruiseomat.rsi
     layers:
@@ -269,6 +263,15 @@
     color: "#ffb0b0"
   - type: AccessReader
     access: [["HeadOfPersonnel"]]
+
+- type: entity
+  parent: VendingMachineCart
+  id: VendingMachineCartQM
+  suffix: QM & HOP
+  description: PTech vending! Providing a ROBUST selection of PDAs, cartridges, and anything else a dull paper pusher or professional capitalist needs!
+  components:
+  - type: AccessReader
+    access: [["HeadOfPersonnel"],["Quartermaster"]]
 
 - type: entity
   parent: VendingMachine
@@ -322,7 +325,6 @@
     pack: CigaretteMachineAds
   - type: SpeakOnUIClosed
     pack: CigaretteMachineGoodbyes
-  - type: Speech
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/cigs.rsi
     layers:
@@ -350,7 +352,6 @@
     pack: ClothesMateAds
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
-  - type: Speech
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/clothing.rsi
     layers:
@@ -382,7 +383,6 @@
     pack: ClothesMateAds
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
-  - type: Speech
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/winterdrobe.rsi
     layers:
@@ -421,7 +421,6 @@
     pack: HotDrinksMachineAds
   - type: SpeakOnUIClosed
     pack: HotDrinksMachineGoodbyes
-  - type: Speech
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/coffee.rsi
     layers:
@@ -461,7 +460,6 @@
     pack: RobustSoftdrinksAds
   - type: SpeakOnUIClosed
     pack: RobustSoftdrinksGoodbyes
-  - type: Speech
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/cola.rsi
     layers:
@@ -605,7 +603,6 @@
     initialStockQuality: 0.33
   - type: Advertise
     pack: RobustSoftdrinksAds
-  - type: Speech
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/shamblersjuice.rsi
     layers:
@@ -642,7 +639,6 @@
     pack: RobustSoftdrinksAds
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
-  - type: Speech
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/pwrgame.rsi
     layers:
@@ -676,10 +672,9 @@
     ejectDelay: 1.9
     initialStockQuality: 0.33
   - type: Advertise
-    pack: RobustSoftdrinksAds
+    pack: DrGibbAds
   - type: SpeakOnUIClosed
-    pack: GenericVendGoodbyes
-  - type: Speech
+    pack: DrGibbGoodbyes
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/gib.rsi
     layers:
@@ -694,6 +689,42 @@
     radius: 1.5
     energy: 1.6
     color: "#D82929"
+
+- type: entity
+  parent: VendingMachine
+  id: VendingMachineSmite
+  name: Smite Vendor
+  description: Popular with the administration.
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/VendingMachines/smite.rsi
+    layers:
+    - state: "off"
+      map: [ "enum.VendingMachineVisualLayers.Base" ]
+    - state: "off"
+      map: [ "enum.VendingMachineVisualLayers.BaseUnshaded" ]
+      shader: unshaded
+    - state: panel
+      map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+  - type: VendingMachine
+    pack: SmiteInventory
+    dispenseOnHitChance: 0.25
+    dispenseOnHitThreshold: 2
+    offState: off
+    brokenState: broken
+    normalState: normal-unshaded
+    ejectState: eject-unshaded
+    denyState: deny-unshaded
+    ejectDelay: 1.9
+    initialStockQuality: 0.33
+  - type: Advertise
+    pack: SmiteAds
+  - type: SpeakOnUIClosed
+    pack: SmiteGoodbyes
+  - type: PointLight
+    radius: 1.5
+    energy: 1.6
+    color: "#00E645"
 
 - type: entity
   parent: VendingMachine
@@ -776,7 +807,6 @@
     pack: DiscountDansAds
   - type: SpeakOnUIClosed
     pack: DiscountDansGoodbyes
-  - type: Speech
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/discount.rsi
     layers:
@@ -993,7 +1023,6 @@
     pack: GetmoreChocolateCorpAds
   - type: SpeakOnUIClosed
     pack: GetmoreChocolateCorpGoodbyes
-  - type: Speech
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/snack.rsi
     layers:
@@ -1139,7 +1168,6 @@
     pack: BodaAds
   - type: SpeakOnUIClosed
     pack: BodaGoodbyes
-  - type: Speech
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/sovietsoda.rsi
     layers:
@@ -1173,7 +1201,6 @@
     pack: AutoDrobeAds
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
-  - type: Speech
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/theater.rsi
     layers:
@@ -1209,7 +1236,6 @@
     pack: VendomatAds
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
-  - type: Speech
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/vendomat.rsi
     layers:
@@ -1242,7 +1268,6 @@
     pack: VendomatAds
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
-  - type: Speech
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/robotics.rsi
     layers:
@@ -1341,7 +1366,6 @@
     pack: ChangAds
   - type: SpeakOnUIClosed
     pack: ChangGoodbyes
-  - type: Speech
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/changs.rsi
     layers:
@@ -1407,7 +1431,6 @@
     pack: DonutAds
   - type: SpeakOnUIClosed
     pack: DonutGoodbyes
-  - type: Speech
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/donut.rsi
     layers:
@@ -2104,6 +2127,39 @@
   - type: AccessReader
     access: [["Kitchen"], ["Theatre"]]
 
+# Pride Vending Machine
+
+- type: entity
+  parent: VendingMachine
+  id: VendingMachinePride
+  name: Pride-O-Mat
+  description: A vending machine containing pride.
+  components:
+  - type: VendingMachine
+    pack: PrideDrobeInventory
+    offState: off
+    brokenState: broken
+    normalState: normal-unshaded
+  - type: Advertise
+    pack: PrideDrobeAds
+  - type: SpeakOnUIClosed
+    pack: PrideDrobeGoodbyes
+  - type: Speech
+  - type: PointLight
+    radius: 1.5
+    energy: 1.3 # reduced energy since the color is pure white
+    color: "#FFFFFF"
+  - type: Sprite
+    sprite: Structures/Machines/VendingMachines/pride.rsi
+    layers:
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.Base"]
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.BaseUnshaded"]
+      shader: unshaded
+    - state: panel
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+
 # Gas Tank Dispenser
 
 - type: entity
@@ -2179,3 +2235,82 @@
   - type: AccessReader
     access: [["SyndicateAgent"]]
 
+- type: entity
+  parent: VendingMachine
+  id: VendingMachineDonk
+  name: DONK CO. Vendor
+  description: A vending machine selling various DONK CO products. Not recommended for those with a weak stomach.
+  components:
+  - type: VendingMachine
+    pack: DonkCoInventory
+    offState: off
+    brokenState: broken
+    normalState: normal-unshaded
+  - type: Advertise
+    pack: DonkCoAds
+  - type: SpeakOnUIClosed
+    pack: DonkCoGoodbyes
+  - type: Speech
+  - type: PointLight
+    radius: 1.5
+    energy: 1.3 # reduced energy since the color is pure white
+    color: "#FFFFFF"
+  - type: Sprite
+    sprite: Structures/Machines/VendingMachines/donkco.rsi
+    layers:
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.Base"]
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.BaseUnshaded"]
+      shader: unshaded
+    - state: panel
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+
+- type: entity
+  parent: VendingMachine
+  id: VendingMachineDonksoft
+  name: Donksoft Toy Vendor
+  description: A vending machine selling various DONK CO toys.
+  components:
+  - type: VendingMachine
+    pack: DonkSoftInventory
+    offState: off
+    brokenState: broken
+    normalState: normal-unshaded
+  - type: Advertise
+    pack: DonksoftAds
+  - type: SpeakOnUIClosed
+    pack: DonksoftGoodbyes
+  - type: Speech
+  - type: PointLight
+    radius: 1.5
+    energy: 1.3 # reduced energy since the color is pure white
+    color: "#FFFFFF"
+  - type: Sprite
+    sprite: Structures/Machines/VendingMachines/donksoft.rsi
+    layers:
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.Base"]
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.BaseUnshaded"]
+      shader: unshaded
+    - state: panel
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+
+- type: entity
+  parent: VendingMachineDonksoft
+  id: VendingMachineSyndicateDonksoft
+  name: Syndicate Donksoft Toy Vendor
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/VendingMachines/donksoftsyndicate.rsi
+    layers:
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.Base"]
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.BaseUnshaded"]
+      shader: unshaded
+    - state: panel
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+  - type: AccessReader
+    access: [["SyndicateAgent"]]

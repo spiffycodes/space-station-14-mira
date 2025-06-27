@@ -17,13 +17,9 @@
   - type: Body
     prototype: Moth
     requiredLegs: 2
-  - type: ZombieAccentOverride
-    accent: zombieMoth
   - type: Speech
     speechVerb: Moth
     allowedEmotes: ['Chitter', 'Squeak']
-  - type: TypingIndicator
-    proto: moth
   - type: Butcherable
     butcheringType: Spike
     spawned:
@@ -38,16 +34,10 @@
         color: "#808A51"
       Burn:
         sprite: Mobs/Effects/burn_damage.rsi
-  - type: MothAccent
-  - type: Vocal
-    sounds:
-      Male: UnisexMoth
-      Female: UnisexMoth
-      Unsexed: UnisexMoth
   - type: MovementSpeedModifier
     weightlessAcceleration: 1.5 # Move around more easily in space.
     weightlessFriction: 1
-    weightlessModifier: 1
+    baseWeightlessModifier: 1
   - type: Flammable
     damage:
       types:
@@ -80,8 +70,8 @@
       - map: [ "enum.HumanoidVisualLayers.LArm" ]
       - map: [ "enum.HumanoidVisualLayers.RLeg" ]
       - map: [ "enum.HumanoidVisualLayers.LLeg" ]
-      - map: [ "enum.HumanoidVisualLayers.Underwear" ]
-      - map: [ "enum.HumanoidVisualLayers.Undershirt" ]
+      - map: [ "enum.HumanoidVisualLayers.UndergarmentBottom" ]
+      - map: [ "enum.HumanoidVisualLayers.UndergarmentTop" ]
       - map: [ "jumpsuit" ]
       - map: [ "enum.HumanoidVisualLayers.LHand" ]
       - map: [ "enum.HumanoidVisualLayers.RHand" ]
@@ -95,13 +85,13 @@
       - map: [ "gloves" ]
       - map: [ "shoes" ]
       - map: [ "ears" ]
-      - map: [ "outerClothing" ]
       - map: [ "eyes" ]
       - map: [ "belt" ]
       - map: [ "id" ]
+      - map: [ "outerClothing" ]
       - map: [ "enum.HumanoidVisualLayers.Tail" ] #in the utopian future we should probably have a wings enum inserted here so everyhting doesn't break
-      - map: [ "neck" ]
       - map: [ "back" ]
+      - map: [ "neck" ]
       - map: [ "enum.HumanoidVisualLayers.FacialHair" ]
       - map: [ "enum.HumanoidVisualLayers.Hair" ]
       - map: [ "enum.HumanoidVisualLayers.HeadSide" ]
@@ -115,12 +105,59 @@
         state: "creampie_moth"
         visible: false
   - type: Inventory
+    speciesId: moth
     femaleDisplacements:
       jumpsuit:
         sizeMaps:
           32:
-            sprite: Mobs/Species/Human/displacement.rsi
+            sprite: Mobs/Species/Moth/displacement.rsi
             state: jumpsuit-female
+      back:
+        sizeMaps:
+          32:
+            sprite: Mobs/Species/Moth/displacement.rsi
+            state: back
+      outerClothing:
+        sizeMaps:
+          32:
+            sprite: Mobs/Species/Moth/displacement.rsi
+            state: outerclothing
+      gloves:
+        sizeMaps:
+          32:
+            sprite: Mobs/Species/Moth/displacement.rsi
+            state: hand
+      shoes:
+        sizeMaps:
+          32:
+            sprite: Mobs/Species/Moth/displacement.rsi
+            state: shoes
+    displacements:
+      jumpsuit:
+        sizeMaps:
+          32:
+            sprite: Mobs/Species/Moth/displacement.rsi
+            state: jumpsuit-male
+      back:
+        sizeMaps:
+          32:
+            sprite: Mobs/Species/Moth/displacement.rsi
+            state: back
+      outerClothing:
+        sizeMaps:
+          32:
+            sprite: Mobs/Species/Moth/displacement.rsi
+            state: outerclothing
+      gloves:
+        sizeMaps:
+          32:
+            sprite: Mobs/Species/Moth/displacement.rsi
+            state: hand
+      shoes:
+        sizeMaps:
+          32:
+            sprite: Mobs/Species/Moth/displacement.rsi
+            state: shoes
   - type: LeavesFootprints
     footprintPrototype: FootprintClawLeft
     footprintPrototypeAlternative: FootprintClawRight
@@ -139,7 +176,6 @@
     - Common
     - Moffic
 
-
 - type: entity
   parent: BaseSpeciesDummy
   id: MobMothDummy
@@ -148,10 +184,56 @@
   - type: HumanoidAppearance
     species: Moth
   - type: Inventory
+    speciesId: moth
     femaleDisplacements:
       jumpsuit:
         sizeMaps:
           32:
-            sprite: Mobs/Species/Human/displacement.rsi
+            sprite: Mobs/Species/Moth/displacement.rsi
             state: jumpsuit-female
-
+      back:
+        sizeMaps:
+          32:
+            sprite: Mobs/Species/Moth/displacement.rsi
+            state: back
+      outerClothing:
+        sizeMaps:
+          32:
+            sprite: Mobs/Species/Moth/displacement.rsi
+            state: outerclothing
+      gloves:
+        sizeMaps:
+          32:
+            sprite: Mobs/Species/Moth/displacement.rsi
+            state: hand
+      shoes:
+        sizeMaps:
+          32:
+            sprite: Mobs/Species/Moth/displacement.rsi
+            state: shoes
+    displacements:
+      jumpsuit:
+        sizeMaps:
+          32:
+            sprite: Mobs/Species/Moth/displacement.rsi
+            state: jumpsuit-male
+      back:
+        sizeMaps:
+          32:
+            sprite: Mobs/Species/Moth/displacement.rsi
+            state: back
+      outerClothing:
+        sizeMaps:
+          32:
+            sprite: Mobs/Species/Moth/displacement.rsi
+            state: outerclothing
+      gloves:
+        sizeMaps:
+          32:
+            sprite: Mobs/Species/Moth/displacement.rsi
+            state: hand
+      shoes:
+        sizeMaps:
+          32:
+            sprite: Mobs/Species/Moth/displacement.rsi
+            state: shoes

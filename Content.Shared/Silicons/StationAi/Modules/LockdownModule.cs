@@ -1,4 +1,5 @@
 using Content.Shared.Actions;
+using Content.Shared.Charges.Components;
 using Content.Shared.Doors.Components;
 using Content.Shared.Doors.Systems;
 
@@ -65,7 +66,7 @@ public sealed class LockdownModuleSystem : EntitySystem
         if (!args.Handled)
             return;
 
-        if (args.Action.Comp.Charges > 0)
+        if (TryComp<LimitedChargesComponent>(args.Action.Owner, out var charges) && charges.LastCharges > 0)
             return;
 
         EntityManager.DeleteEntity(args.Action);
@@ -74,19 +75,11 @@ public sealed class LockdownModuleSystem : EntitySystem
 
 public sealed partial class StationAiLockdownEvent : InstantActionEvent
 {
-    [ViewVariables]
-    public TimeSpan ResetDelay => TimeSpan.FromSeconds(_resetDelay);
-
-    [DataField("resetDelay")]
-    public float _resetDelay;
-
-    public StationAiLockdownEvent(float delay)
-    {
-        _resetDelay = delay;
-    }
+    [DataField]
+    public TimeSpan ResetDelay;
 
     public StationAiLockdownEvent(TimeSpan delay)
     {
-        _resetDelay = (float) delay.TotalSeconds;
+        ResetDelay = delay;
     }
 }

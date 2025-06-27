@@ -90,7 +90,7 @@
   name: janitorial bomb suit closet
   parent: ClosetSteelBase
   description: It's a storage unit for janitorial explosion-protective suits.
-  suffix: DO NOT MAP
+  categories: [ DoNotMap ]
   components:
   - type: Appearance
   - type: EntityStorageVisuals
@@ -116,6 +116,17 @@
     stateDoorClosed: bio_door
   - type: ClosetSkeletonLocker
     equipment: SkeletonJanitorGear
+
+# Science Variant
+- type: entity
+  id: ClosetL3Science
+  parent: ClosetL3
+  components:
+  - type: Appearance
+  - type: EntityStorageVisuals
+    stateBaseClosed: bio_sci
+    stateDoorOpen: bio_sci_open
+    stateDoorClosed: bio_sci_door
 
 # Virology variant
 - type: entity

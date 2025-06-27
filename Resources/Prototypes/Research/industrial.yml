@@ -27,7 +27,6 @@
   recipeUnlocks:
   - RadarConsoleCircuitboard
   - HandHeldMassScanner
-  - BorgModuleGPS
 
 - type: technology
   id: AdvancedPowercells
@@ -75,17 +74,13 @@
   name: research-technology-power-generation
   icon:
     sprite: Structures/Power/Generation/portable_generator.rsi
-    state: portgen0
+    state: portgen1
   discipline: Industrial
   tier: 1
   cost: 7500
   recipeUnlocks:
   - PortableGeneratorPacmanMachineCircuitboard
   - PortableGeneratorSuperPacmanMachineCircuitboard
-  - PortableGeneratorJrPacmanMachineCircuitboard
-  - SolarControlComputerCircuitboard
-  - SolarTrackerElectronics
-  - EmitterCircuitboard
 
 - type: technology
   id: AtmosphericTech
@@ -99,25 +94,6 @@
   recipeUnlocks:
   - ThermomachineFreezerMachineCircuitBoard
   - GasRecyclerMachineCircuitboard
-
-- type: technology
-  id: RipleyAPLU
-  name: research-technology-ripley-aplu
-  icon:
-    sprite: Objects/Specific/Mech/mecha.rsi
-    state: ripley
-  discipline: Industrial
-  tier: 1
-  cost: 7500
-  recipeUnlocks:
-  - RipleyHarness
-  - RipleyLArm
-  - RipleyRArm
-  - RipleyLLeg
-  - RipleyRLeg
-  - RipleyCentralElectronics
-  - RipleyPeripheralsElectronics
-  - MechEquipmentGrabber
 
 # Tier 2
 
@@ -168,6 +144,8 @@
     - BorgModuleAdvancedTool
     - RCD
     - RCDAmmo
+    - Fulton
+    - FultonBeacon
 
 - type: technology
   id: MassExcavation
@@ -182,6 +160,7 @@
     - OreBagOfHolding
     - MiningDrillDiamond
     - AdvancedMineralScannerEmpty
+    - BorgModuleAdvancedMining
 
 # Tier 3
 
@@ -200,8 +179,8 @@
   - ClothingBackpackDuffelHolding
 
 - type: technology
-  id: PortableFission
-  name: research-technology-portable-fission
+  id: OptimizedMicrogalvanism
+  name: research-technology-optimized-microgalvanism
   icon:
     sprite: Objects/Power/power_cells.rsi
     state: microreactor
@@ -210,5 +189,17 @@
   cost: 10000
   recipeUnlocks:
   - PowerCellMicroreactor
+  - PowerCellHyper
   technologyPrerequisites:
   - AdvancedPowercells
+
+- type: technology
+  id: FurtherKnowledgeIndustrial
+  parent: FurtherKnowledgeArsenal
+  discipline: Industrial
+  genericUnlocks:
+  - unlockDescription: station-event-funding-research-description
+    purchaseEvent: !type:ResearchFundingEvent
+      message: station-event-funding-research-announcement
+      discipline: station-event-funding-research-industrial
+      payment: 20000

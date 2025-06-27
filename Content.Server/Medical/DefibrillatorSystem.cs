@@ -6,8 +6,8 @@ using Content.Server.EUI;
 using Content.Server.Ghost;
 using Content.Server.Popups;
 using Content.Server.PowerCell;
-using Content.Server.Traits.Assorted;
 using Content.Shared.Body.Systems;
+using Content.Shared.Traits.Assorted;
 using Content.Shared.Damage;
 using Content.Shared.DoAfter;
 using Content.Shared.FixedPoint;
@@ -25,7 +25,6 @@ using Content.Shared.Timing;
 using Content.Shared.Toggleable;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Player;
-using Robust.Shared.Timing;
 
 namespace Content.Server.Medical;
 
@@ -34,19 +33,19 @@ namespace Content.Server.Medical;
 /// </summary>
 public sealed class DefibrillatorSystem : EntitySystem
 {
-    [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly SharedBodySystem _body = default!;
     [Dependency] private readonly ChatSystem _chatManager = default!;
     [Dependency] private readonly DamageableSystem _damageable = default!;
     [Dependency] private readonly DoAfterSystem _doAfter = default!;
     [Dependency] private readonly ElectrocutionSystem _electrocution = default!;
     [Dependency] private readonly EuiManager _euiManager = default!;
+    [Dependency] private readonly ISharedPlayerManager _player = default!;
     [Dependency] private readonly ItemToggleSystem _toggle = default!;
-    [Dependency] private readonly RottingSystem _rotting = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly MobThresholdSystem _mobThreshold = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly PowerCellSystem _powerCell = default!;
+    [Dependency] private readonly RottingSystem _rotting = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedMindSystem _mind = default!;
     [Dependency] private readonly UseDelaySystem _useDelay = default!;
@@ -94,15 +93,14 @@ public sealed class DefibrillatorSystem : EntitySystem
     /// <returns>
     ///     Returns true if the target is valid to be defibed, false otherwise.
     /// </returns>
-    public bool CanZap(EntityUid uid, EntityUid target, EntityUid? user = null, DefibrillatorComponent? component = null, bool targetCanBeAlive = false)
+    public bool CanZap(EntityUid uid, EntityUid target, EntityUid user, DefibrillatorComponent? component = null, bool targetCanBeAlive = false)
     {
         if (!Resolve(uid, ref component))
             return false;
 
         if (!_toggle.IsActivated(uid))
         {
-            if (user != null)
-                _popup.PopupEntity(Loc.GetString("defibrillator-not-on"), uid, user.Value);
+            _popup.PopupEntity(Loc.GetString("defibrillator-not-on"), uid, user);
             return false;
         }
 
@@ -120,6 +118,15 @@ public sealed class DefibrillatorSystem : EntitySystem
 
         if (!targetCanBeAlive && !component.CanDefibCrit && _mobState.IsCritical(target, mobState))
             return false;
+
+        var ev = new DefibrillateAttemptEvent(user, uid, target);
+        RaiseLocalEvent(target, ev);
+
+        if (ev.Cancelled)
+        {
+            _popup.PopupEntity(Loc.GetString(ev.Reason), uid, user);
+            return false;
+        }
 
         return true;
     }
@@ -198,9 +205,9 @@ public sealed class DefibrillatorSystem : EntitySystem
             _chatManager.TrySendInGameICMessage(uid, Loc.GetString("defibrillator-rotten"),
                 InGameICChatType.Speak, true);
         }
-        else if (HasComp<UnrevivableComponent>(target))
+        else if (TryComp<UnrevivableComponent>(target, out var unrevivable))
         {
-            _chatManager.TrySendInGameICMessage(uid, Loc.GetString("defibrillator-unrevivable"),
+            _chatManager.TrySendInGameICMessage(uid, Loc.GetString(unrevivable.ReasonMessage),
                 InGameICChatType.Speak, true);
         }
         else
@@ -230,13 +237,13 @@ public sealed class DefibrillatorSystem : EntitySystem
             }
 
             if (_mind.TryGetMind(target, out _, out var mind) &&
-                mind.Session is { } playerSession)
+                _player.TryGetSessionById(mind.UserId, out var playerSession))
             {
                 session = playerSession;
                 // notify them they're being revived.
                 if (mind.CurrentEntity != target)
                 {
-                    _euiManager.OpenEui(new ReturnToBodyEui(mind, _mind), session);
+                    _euiManager.OpenEui(new ReturnToBodyEui(mind, _mind, _player), session);
                 }
             }
             else

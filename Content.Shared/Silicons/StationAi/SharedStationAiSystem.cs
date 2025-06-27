@@ -15,6 +15,7 @@ using Content.Shared.Movement.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Power;
 using Content.Shared.Power.EntitySystems;
+using Content.Shared.Silicons.Sync.Events;
 using Content.Shared.StationAi;
 using Content.Shared.Verbs;
 using Content.Shared.Whitelist;
@@ -22,6 +23,9 @@ using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Audio;
+using Robust.Shared.Audio.Systems;
+using Robust.Shared.Containers;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Network;
@@ -30,6 +34,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 using Robust.Shared.Timing;
 using System.Diagnostics.CodeAnalysis;
+using Robust.Shared.Utility;
 
 namespace Content.Shared.Silicons.StationAi;
 
@@ -59,6 +64,7 @@ public abstract partial class SharedStationAiSystem : EntitySystem
     [Dependency] private readonly   SharedUserInterfaceSystem _uiSystem = default!;
     [Dependency] private readonly   StationAiVisionSystem _vision = default!;
     [Dependency] private readonly   EntityWhitelistSystem _whitelist = default!;
+    [Dependency] private readonly   IPrototypeManager _protoManager = default!;
 
     // StationAiHeld is added to anything inside of an AI core.
     // StationAiHolder indicates it can hold an AI positronic brain (e.g. holocard / core).
@@ -87,6 +93,7 @@ public abstract partial class SharedStationAiSystem : EntitySystem
         InitializeHeld();
         InitializeLight();
         InitializeShunting();
+        InitializeCustomization();
 
         SubscribeLocalEvent<StationAiWhitelistComponent, BoundUserInterfaceCheckRangeEvent>(OnAiBuiCheck);
 
@@ -101,39 +108,46 @@ public abstract partial class SharedStationAiSystem : EntitySystem
         SubscribeLocalEvent<StationAiHolderComponent, EntInsertedIntoContainerMessage>(OnHolderConInsert);
         SubscribeLocalEvent<StationAiHolderComponent, EntRemovedFromContainerMessage>(OnHolderConRemove);
         SubscribeLocalEvent<StationAiHolderComponent, IntellicardDoAfterEvent>(OnIntellicardDoAfter);
+        SubscribeLocalEvent<StationAiHolderComponent, SiliconSyncMasterGetIconEvent>(OnHolderGetMasterIcon);
 
         SubscribeLocalEvent<StationAiCoreComponent, EntInsertedIntoContainerMessage>(OnAiInsert);
         SubscribeLocalEvent<StationAiCoreComponent, EntRemovedFromContainerMessage>(OnAiRemove);
         SubscribeLocalEvent<StationAiCoreComponent, MapInitEvent>(OnAiMapInit);
         SubscribeLocalEvent<StationAiCoreComponent, ComponentShutdown>(OnAiShutdown);
         SubscribeLocalEvent<StationAiCoreComponent, GetVerbsEvent<Verb>>(OnCoreVerbs);
-
-        SubscribeLocalEvent<StationAiCoreSpriteComponent, ComponentInit>(OnCoreSpriteInit);
-        SubscribeLocalEvent<StationAiCoreSpriteComponent, EntGotInsertedIntoContainerMessage>((u, c, e) => OnInsert((u, c), e.Container.Owner));
-        SubscribeLocalEvent<StationAiCoreSpriteComponent, EntGotRemovedFromContainerMessage>((u, c, e) => OnRemoved((u, c), e.Container.Owner));
     }
 
     private void OnCoreVerbs(Entity<StationAiCoreComponent> ent, ref GetVerbsEvent<Verb> args)
     {
-        if (!_admin.IsAdmin(args.User) ||
-            TryGetHeld((ent.Owner, ent.Comp), out _))
-        {
-            return;
-        }
-
         var user = args.User;
 
-        args.Verbs.Add(new Verb()
+        // Admin option to take over the station AI core
+        if (_admin.IsAdmin(args.User) &&
+            !TryGetHeld((ent.Owner, ent.Comp), out _))
         {
-            Text = Loc.GetString("station-ai-takeover"),
-            Category = VerbCategory.Debug,
-            Act = () =>
+            args.Verbs.Add(new Verb()
             {
-                var brain = SpawnInContainerOrDrop(DefaultAi, ent.Owner, StationAiCoreComponent.Container);
-                _mind.ControlMob(user, brain);
-            },
-            Impact = LogImpact.High,
-        });
+                Text = Loc.GetString("station-ai-takeover"),
+                Category = VerbCategory.Debug,
+                Act = () =>
+                {
+                    var brain = SpawnInContainerOrDrop(DefaultAi, ent.Owner, StationAiCoreComponent.Container);
+                    _mind.ControlMob(user, brain);
+                },
+                Impact = LogImpact.High,
+            });
+        }
+
+        // Option to open the station AI customization menu
+        if (TryGetHeld((ent, ent.Comp), out var insertedAi) && insertedAi == user)
+        {
+            args.Verbs.Add(new Verb()
+            {
+                Text = Loc.GetString("station-ai-customization-menu"),
+                Act = () => _uiSystem.TryOpenUi(ent.Owner, StationAiCustomizationUiKey.Key, insertedAi),
+                Icon = new SpriteSpecifier.Texture(new("/Textures/Interface/emotes.svg.192dpi.png")),
+            });
+        }
     }
 
     private void OnAiAccessible(Entity<StationAiOverlayComponent> ent, ref AccessibleOverrideEvent args)
@@ -229,10 +243,14 @@ public abstract partial class SharedStationAiSystem : EntitySystem
         // Try to insert our thing into them
         if (_slots.CanEject(ent.Owner, args.User, ent.Comp.Slot))
         {
-            if (!_slots.TryInsert(args.Args.Target.Value, targetHolder.Slot, ent.Comp.Slot.Item!.Value, args.User, excludeUserAudio: true))
-            {
+            if (ent.Comp.Slot.Item is not {} item)
                 return;
-            }
+
+            if (!_slots.TryInsert(args.Args.Target.Value, targetHolder.Slot, item, args.User, excludeUserAudio: true))
+                return;
+
+            var ev = new GotIntellicardedEvent(args.Args.Target.Value, ent.Owner, args.User);
+            RaiseLocalEvent(item, ev);
 
             args.Handled = true;
             return;
@@ -241,10 +259,14 @@ public abstract partial class SharedStationAiSystem : EntitySystem
         // Otherwise try to take from them
         if (_slots.CanEject(args.Args.Target.Value, args.User, targetHolder.Slot))
         {
-            if (!_slots.TryInsert(ent.Owner, ent.Comp.Slot, targetHolder.Slot.Item!.Value, args.User, excludeUserAudio: true))
-            {
+            if (targetHolder.Slot.Item is not {} item)
                 return;
-            }
+
+            if (!_slots.TryInsert(ent.Owner, ent.Comp.Slot, item, args.User, excludeUserAudio: true))
+                return;
+
+            var ev = new IntellicardedToCoreEvent(args.Args.Target.Value, ent.Owner, args.User);
+            RaiseLocalEvent(item, ev);
 
             args.Handled = true;
         }
@@ -287,7 +309,7 @@ public abstract partial class SharedStationAiSystem : EntitySystem
         if (ev.Cancelled)
             return;
 
-        if (TryGetHeldFromHolder((args.Target.Value, targetHolder), out var held) && _timing.CurTime > intelliComp.NextWarningAllowed)
+        if (TryGetHeld((args.Target.Value, targetHolder), out var held) && _timing.CurTime > intelliComp.NextWarningAllowed)
         {
             RaiseLocalEvent(held, ev);
 
@@ -339,6 +361,12 @@ public abstract partial class SharedStationAiSystem : EntitySystem
         UpdateAppearance(ent.Owner);
     }
 
+    private void OnHolderGetMasterIcon(Entity<StationAiHolderComponent> ent, ref SiliconSyncMasterGetIconEvent args)
+    {
+        if (ent.Comp.AiDied)
+            args.Cancel();
+    }
+
     private void OnAiShutdown(Entity<StationAiCoreComponent> ent, ref ComponentShutdown args)
     {
         // TODO: Tryqueuedel
@@ -359,20 +387,31 @@ public abstract partial class SharedStationAiSystem : EntitySystem
         AttachEye(ent);
     }
 
-    public void SwitchRemoteEntityMode(Entity<StationAiCoreComponent> ent, bool isRemote)
+    public void SwitchRemoteEntityMode(Entity<StationAiCoreComponent?> entity, bool isRemote)
     {
-        if (isRemote == ent.Comp.Remote)
+        if (entity.Comp?.Remote == null || entity.Comp.Remote == isRemote)
             return;
+
+        var ent = new Entity<StationAiCoreComponent>(entity.Owner, entity.Comp);
 
         ent.Comp.Remote = isRemote;
 
         EntityCoordinates? coords = ent.Comp.RemoteEntity != null ? Transform(ent.Comp.RemoteEntity.Value).Coordinates : null;
 
         // Attach new eye
+        var oldEye = ent.Comp.RemoteEntity;
+
         ClearEye(ent);
 
         if (SetupEye(ent, coords))
             AttachEye(ent);
+
+        if (oldEye != null)
+        {
+            // Raise the following event on the old eye before it's deleted
+            var ev = new StationAiRemoteEntityReplacementEvent(ent.Comp.RemoteEntity);
+            RaiseLocalEvent(oldEye.Value, ref ev);
+        }
 
         // Adjust user FoV
         var user = GetInsertedAI(ent);
@@ -492,84 +531,27 @@ public abstract partial class SharedStationAiSystem : EntitySystem
         ClearEye(ent);
     }
 
-    private void OnCoreSpriteInit(EntityUid uid, StationAiCoreSpriteComponent component, ComponentInit args)
-    {
-        if (!_containers.TryGetContainingContainer(uid, out var container))
-            return;
-
-        OnInsert((uid, component), container.Owner);
-    }
-
-    private void OnInsert(Entity<StationAiCoreSpriteComponent> ent, EntityUid container)
-    {
-        if (!TryComp<StationAiHolderComponent>(container, out var coreComp))
-            return;
-
-        if (!coreComp.UpdateSprite)
-            return;
-
-        ent.Comp.CoreUid = container;
-        ent.Comp.OldVisuals = coreComp.Visuals;
-        Dirty(ent);
-
-        var _oldVisuals = coreComp.Visuals;
-        foreach (var (state, layers) in _oldVisuals)
-        {
-            if (!ent.Comp.Visuals.ContainsKey(state))
-                continue;
-
-            foreach (var (layer, sprite) in layers)
-            {
-                if (!ent.Comp.Visuals[state].ContainsKey(layer))
-                    continue;
-
-                coreComp.Visuals[state][layer] = ent.Comp.Visuals[state][layer];
-            }
-        }
-
-        Dirty(container, coreComp);
-
-        coreComp.AiDied = false;
-        Dirty(container, coreComp);
-        UpdateAppearance((container, coreComp));
-    }
-
-    private void OnRemoved(Entity<StationAiCoreSpriteComponent> ent, EntityUid container)
-    {
-        if (container != ent.Comp.CoreUid)
-            return;
-
-        if (!TryComp<StationAiHolderComponent>(container, out var coreComp))
-            return;
-
-        if (!coreComp.UpdateSprite)
-            return;
-
-        coreComp.Visuals = ent.Comp.OldVisuals;
-        Dirty(container, coreComp);
-
-        UpdateAppearance((container, coreComp));
-    }
-
     protected void UpdateAppearance(Entity<StationAiHolderComponent?> entity)
     {
         if (!Resolve(entity.Owner, ref entity.Comp, false))
             return;
 
+        var state = StationAiState.Empty;
+
         if (entity.Comp.AiDied)
+            state = StationAiState.Dead;
+        else if (_containers.TryGetContainer(entity.Owner, StationAiHolderComponent.Container, out var container) && container.Count > 0)
+            state = StationAiState.Occupied;
+
+        // If the entity is a station AI core, attempt to customize its appearance
+        if (TryComp<StationAiCoreComponent>(entity, out var stationAiCore))
         {
-            _appearance.SetData(entity.Owner, StationAiVisualState.Key, StationAiState.Dead);
+            CustomizeAppearance((entity, stationAiCore), state);
             return;
         }
 
-        if (!_containers.TryGetContainer(entity.Owner, StationAiHolderComponent.Container, out var container) ||
-            container.Count == 0)
-        {
-            _appearance.SetData(entity.Owner, StationAiVisualState.Key, StationAiState.Empty);
-            return;
-        }
-
-        _appearance.SetData(entity.Owner, StationAiVisualState.Key, StationAiState.Occupied);
+        // Otherwise let generic visualizers handle the appearance update
+        _appearance.SetData(entity.Owner, StationAiVisualState.Key, state);
     }
 
     public virtual void AnnounceAi(EntityUid uid, string msg, SoundSpecifier? cue = null) { }
@@ -666,6 +648,36 @@ public sealed partial class IntellicardAttemptEvent : CancellableEntityEventArgs
 [Serializable, NetSerializable]
 public sealed partial class IntellicardDoAfterEvent : SimpleDoAfterEvent;
 
+public sealed partial class GotIntellicardedEvent : EntityEventArgs
+{
+    public EntityUid Intellicard;
+    public EntityUid Core;
+    public EntityUid User;
+
+    public GotIntellicardedEvent(EntityUid intellicard, EntityUid core, EntityUid user)
+    {
+        Intellicard = intellicard;
+        Core = core;
+        User = user;
+    }
+}
+
+public sealed partial class IntellicardedToCoreEvent : EntityEventArgs
+{
+    public EntityUid Intellicard;
+    public EntityUid Core;
+    public EntityUid User;
+
+    public IntellicardedToCoreEvent(EntityUid intellicard, EntityUid core, EntityUid user)
+    {
+        Intellicard = intellicard;
+        Core = core;
+        User = user;
+    }
+}
+
+public sealed partial class IntellicardDoAfterEvent : SimpleDoAfterEvent;
+
 
 [Serializable, NetSerializable]
 public enum StationAiVisualState : byte
@@ -673,10 +685,10 @@ public enum StationAiVisualState : byte
     Key,
 }
 
-public enum StationAiVisualLayers : byte
+[Serializable, NetSerializable]
+public enum StationAiSpriteState : byte
 {
-    Base,
-    Screen
+    Key,
 }
 
 [Serializable, NetSerializable]
@@ -685,4 +697,5 @@ public enum StationAiState : byte
     Empty,
     Occupied,
     Dead,
+    Hologram,
 }

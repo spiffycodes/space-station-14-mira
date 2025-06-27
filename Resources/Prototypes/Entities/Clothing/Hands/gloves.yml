@@ -23,7 +23,7 @@
     mustBeEquippedToUse: true
   - type: Fiber
     fiberMaterial: fibers-leather
-    fiberColor: fibers-red
+    fiberColor: "#940000"
   - type: FingerprintMask
   - type: Tag
     tags:
@@ -43,7 +43,7 @@
     sprite: Clothing/Hands/Gloves/Boxing/boxingblue.rsi
   - type: Fiber
     fiberMaterial: fibers-leather
-    fiberColor: fibers-blue
+    fiberColor: "#0089EF"
   - type: FingerprintMask
 
 - type: entity
@@ -59,7 +59,7 @@
     sprite: Clothing/Hands/Gloves/Boxing/boxinggreen.rsi
   - type: Fiber
     fiberMaterial: fibers-leather
-    fiberColor: fibers-green
+    fiberColor: "#5ABF2F"
   - type: FingerprintMask
 
 - type: entity
@@ -75,7 +75,7 @@
     sprite: Clothing/Hands/Gloves/Boxing/boxingyellow.rsi
   - type: Fiber
     fiberMaterial: fibers-leather
-    fiberColor: fibers-yellow
+    fiberColor: "#ffe14d"
   - type: FingerprintMask
 
 - type: entity
@@ -106,7 +106,7 @@
   - type: Insulated
   - type: Fiber
     fiberMaterial: fibers-durathread
-    fiberColor: fibers-regal-blue
+    fiberColor: "#2d4c53"
   - type: FingerprintMask
 
 - type: entity
@@ -121,11 +121,15 @@
     sprite: Clothing/Hands/Gloves/hop.rsi
   - type: Fiber
     fiberMaterial: fibers-durathread
-    fiberColor: fibers-black
+    fiberColor: "#535353"
   - type: Armor
     basePart: Arm
     modifiers:
-      [ Arm ]: { coefficients: { Slash: 0.95 } }
+    - parts:
+      - Arm
+      modifier:
+        coefficients:
+            Slash: 0.95
   - type: FingerprintMask
 
 #### Medical
@@ -156,7 +160,7 @@
   - type: Fiber
     fiberMaterial: fibers-nitrile
   - type: FingerprintMask
-####
+
 - type: entity
   parent: ClothingHandsButcherable
   id: ClothingHandsGlovesLeather
@@ -169,8 +173,13 @@
     sprite: Clothing/Hands/Gloves/leather.rsi
   - type: Fiber
     fiberMaterial: fibers-leather
-    fiberColor: fibers-brown
+    fiberColor: "#723A02"
   - type: FingerprintMask
+  - type: DamageOnInteractProtection
+    damageProtection:
+      flatReductions:
+        Heat: 10
+        Caustic: 5
 
 - type: entity
   parent: ClothingHandsBase
@@ -198,7 +207,7 @@
     sprite: Clothing/Hands/Gloves/robohands.rsi
   - type: Fiber
     fiberMaterial: fibers-leather
-    fiberColor: fibers-black
+    fiberColor: "#535353"
   - type: FingerprintMask
 
 - type: entity
@@ -211,14 +220,14 @@
     sprite: Clothing/Hands/Gloves/spaceninja.rsi
     layers:
     - state: icon
-      map: [ "enum.ToggleVisuals.Layer" ]
+      map: [ "enum.ToggleableVisuals.Layer" ]
   - type: Clothing
     sprite: Clothing/Hands/Gloves/spaceninja.rsi
   - type: Appearance
   - type: GenericVisualizer
     visuals:
-      enum.ToggleVisuals.Toggled:
-        enum.ToggleVisuals.Layer:
+      enum.ToggleableVisuals.Enabled:
+        enum.ToggleableVisuals.Layer:
           True: {state: icon-green}
           False: {state: icon}
   - type: Insulated
@@ -282,7 +291,7 @@
     sprite: Clothing/Hands/Gloves/tacticalmaidgloves.rsi
   - type: Insulated
   - type: Fiber
-    fiberColor: fibers-black
+    fiberColor: "#535353"
 
 - type: entity
   parent: [ BaseSecurityCargoContraband, ClothingHandsGlovesCombat ]
@@ -300,7 +309,7 @@
     - id: ClothingHandsGlovesMercFingerless
   - type: Fiber
     fiberMaterial: fibers-insulative
-    fiberColor: fibers-olive
+    fiberColor: "#818155"
 
 - type: entity
   parent: ClothingHandsButcherable
@@ -314,7 +323,7 @@
     sprite: Clothing/Hands/Gloves/fingerless.rsi
   - type: Fiber
     fiberMaterial: fibers-synthetic
-    fiberColor: fibers-black
+    fiberColor: "#535353"
   - type: DamageOnInteractProtection
     damageProtection:
       flatReductions:
@@ -332,7 +341,7 @@
     sprite: Clothing/Hands/Gloves/fingerlessinsuls.rsi
   - type: Fiber
     fiberMaterial: fibers-insulative
-    fiberColor: fibers-yellow
+    fiberColor: "#ffe14d"
   - type: DamageOnInteractProtection
     damageProtection:
       flatReductions:
@@ -350,7 +359,7 @@
     sprite: Clothing/Hands/Gloves/mercfingerless.rsi
   - type: Fiber
     fiberMaterial: fibers-insulative
-    fiberColor: fibers-olive
+    fiberColor: "#818155"
   - type: DamageOnInteractProtection
     damageProtection:
       flatReductions:
@@ -400,7 +409,7 @@
     mustBeEquippedToUse: true
   - type: Fiber
     fiberMaterial: fibers-leather
-    fiberColor: fibers-blue
+    fiberColor: "#0089EF"
   - type: FingerprintMask
   - type: MeleeSpeech
   - type: ActivatableUI
@@ -413,9 +422,13 @@
         type: MeleeSpeechBoundUserInterface
   - type: StaticPrice
     price: 0
+  - type: Tag
+    tags:
+    - Kangaroo
+    - WhitelistChameleon
 
 - type: entity
-  parent: ClothingHandsBase
+  parent: [ClothingHandsBase, BaseSecurityContraband]
   id: ClothingHandsGlovesForensic
   name: forensic gloves
   description: Do not leave fibers or fingerprints. If you work without them, you're A TERRIBLE DETECTIVE.
@@ -442,5 +455,200 @@
     sprite: Clothing/Hands/Gloves/janitor.rsi
   - type: Fiber
     fiberMaterial: fibers-rubber
-    fiberColor: fibers-yellow
+    fiberColor: "#ffe14d"
   - type: FingerprintMask
+
+#Knuckledusters
+- type: entity
+  parent: [ClothingHandsBase, BaseMinorContraband]
+  id: ClothingHandsKnuckleDusters
+  name: knuckle dusters
+  description: "Cold plasteel knuckle dusters, makes your punches hit much harder."
+  components:
+  - type: Sprite
+    sprite: Clothing/Hands/Gloves/KnuckleDusters/knuckleduster.rsi
+    state: knuckleduster
+  - type: Clothing
+    sprite: Clothing/Hands/Gloves/KnuckleDusters/knuckleduster.rsi
+  - type: Fiber
+    fiberColor: "#d0d0d0"
+  - type: MeleeWeapon
+    attackRate: 1.5
+    damage:
+      types:
+        Blunt: 12 #Damaged focus unlike Rigged or Northstars which are stun and speed focus
+    soundHit:
+      collection: Punch
+    animation: WeaponArcFist
+    mustBeEquippedToUse: true
+  - type: Tag
+    tags:
+    - WhitelistChameleon
+    - Kangaroo
+
+- type: entity
+  parent: [ClothingHandsKnuckleDusters, BaseMinorContraband] #Craftable version of base knuckledusters
+  id: ClothingHandsKnuckleDustersBrass
+  name: brass knuckle dusters
+  description: "Brass knuckle dusters, just like how they used to make em and still hit just as hard."
+  components:
+  - type: Sprite
+    sprite: Clothing/Hands/Gloves/KnuckleDusters/brassknuckleduster.rsi
+    state: brassknuckleduster
+  - type: Clothing
+    sprite: Clothing/Hands/Gloves/KnuckleDusters/brassknuckleduster.rsi
+  - type: Construction
+    graph: ClothingHandsKnuckleDustersBrass
+    node: icon
+  - type: Tag
+    tags:
+    - WhitelistChameleon
+    - Kangaroo
+
+- type: entity
+  parent: [ClothingHandsBase, BaseGrandTheftContraband]
+  id: ClothingHandsKnuckleDustersQM
+  name: QM's golden knuckle dusters
+  description: "24karat gold infused with plasteel and branded with the Nanotrasen logo. A true symbol of the Quartermaster's might."
+  components:
+  - type: Sprite
+    sprite: Clothing/Hands/Gloves/KnuckleDusters/goldenknuckleduster.rsi
+    state: goldenknuckleduster
+  - type: Clothing
+    sprite: Clothing/Hands/Gloves/KnuckleDusters/goldenknuckleduster.rsi
+  - type: Fiber
+    fiberColor: "#F7C430"
+  - type: MeleeWeapon
+    attackRate: 1.5
+    damage:
+      types:
+        Blunt: 14
+    soundHit:
+      collection: Punch
+    animation: WeaponArcFist
+    mustBeEquippedToUse: true
+  - type: Tag
+    tags:
+    - WhitelistChameleon
+    - Kangaroo
+  - type: StealTarget
+    stealGroup: ClothingHandsKnuckleDustersQM
+
+- type: entity
+  parent: [ClothingHandsBase, BaseSyndicateContraband]
+  id: ClothingHandsKnuckleDustersSyndicate
+  name: syndicate knuckle dusters
+  description: "Plastitanium knuckle dusters branded with the blood-red S. A real man beats someone to death with these."
+  components:
+  - type: Sprite
+    sprite: Clothing/Hands/Gloves/KnuckleDusters/syndicateknuckleduster.rsi
+    state: syndicateknuckleduster
+  - type: Clothing
+    sprite: Clothing/Hands/Gloves/KnuckleDusters/syndicateknuckleduster.rsi
+  - type: MeleeWeapon
+    attackRate: 1.5
+    damage:
+      types:
+        Blunt: 8
+        Piercing: 8
+    soundHit:
+      collection: Punch
+    animation: WeaponArcFist
+    mustBeEquippedToUse: true
+  - type: Tag
+    tags:
+    - WhitelistChameleon
+    - Kangaroo
+
+- type: entity
+  name: stun knuckle dusters
+  parent: [ClothingHandsBase, BaseToggleClothing, BaseSecurityContraband]
+  id: ClothingHandsKnuckleDustersStun
+  description: A pair of knuckle dusters combined with the tech of a stun baton. This makes beating tiders a whole lot easier.
+  components:
+  - type: Sprite
+    sprite: Clothing/Hands/Gloves/KnuckleDusters/electricknuckleduster.rsi
+    layers:
+    - state: knuckleduster_off
+      map: [ "enum.ToggleableVisuals.Layer" ]
+  - type: Clothing
+    sprite: Clothing/Hands/Gloves/KnuckleDusters/electricknuckleduster.rsi
+    equippedPrefix: on
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        enum.ToggleableVisuals.Layer:
+          True: {state: knuckleduster_on}
+          False: {state: knuckleduster_off}
+  - type: ToggleClothing
+    action: ActionToggleKnuckleDustersStun
+  - type: ItemToggle
+    predictable: false
+    soundActivate:
+      collection: sparks
+      params:
+        variation: 0.250
+        volume: 5
+    soundDeactivate:
+      collection: sparks
+      params:
+        variation: 0.250
+        volume: 5
+    soundFailToActivate:
+      path: /Audio/Machines/button.ogg
+      params:
+        variation: 0.250
+        volume: 5
+  - type: Stunbaton
+    energyPerUse: 50
+  - type: ItemToggleMeleeWeapon
+    activatedDamage:
+      types:
+        Blunt: 0
+  - type: MeleeWeapon
+    attackRate: 1.5
+    damage:
+      types:
+        Blunt: 8
+    bluntStaminaDamageFactor: 2.0
+    animation: WeaponArcFist
+  - type: StaminaDamageOnHit
+    damage: 35
+    sound: /Audio/Weapons/egloves.ogg
+  - type: StaminaDamageOnCollide
+    damage: 35
+    sound: /Audio/Weapons/egloves.ogg
+  - type: LandAtCursor # it deals stamina damage when thrown
+  - type: Battery
+    maxCharge: 1000
+    startingCharge: 1000
+  - type: GuideHelp
+    guides:
+    - Security
+    - Antagonists
+
+- type: entity #Admeme
+  parent: ClothingHandsKnuckleDusters
+  id: ClothingHandsKnuckleBoneCrushers
+  name: bone crushers
+  description: "Blessed by the Gods to break all those who don't obey."
+  components:
+  - type: Sprite
+    sprite: Clothing/Hands/Gloves/KnuckleDusters/goldenknuckleduster.rsi
+    state: goldenknuckleduster
+  - type: Clothing
+    sprite: Clothing/Hands/Gloves/KnuckleDusters/goldenknuckleduster.rsi
+  - type: Fiber
+    fiberColor: "#F7C430"
+  - type: MeleeWeapon
+    attackRate: 2
+    damage:
+      types:
+        Blunt: 35
+    soundHit:
+      collection: Punch
+    animation: WeaponArcFist
+  - type: Tag
+    tags:
+    - Kangaroo

@@ -196,16 +196,26 @@ public partial class ChatSystem
     /// <returns></returns>
     private bool AllowedToUseEmote(EntityUid source, EmotePrototype emote)
     {
-        if ((_whitelistSystem.IsWhitelistFail(emote.Whitelist, source) || _whitelistSystem.IsBlacklistPass(emote.Blacklist, source)))
+        // If emote is in AllowedEmotes, it will bypass whitelist and blacklist
+        if (TryComp<SpeechComponent>(source, out var speech) &&
+            speech.AllowedEmotes.Contains(emote.ID))
+        {
+            return true;
+        }
+
+        // Check the whitelist and blacklist
+        if (!EmoteWhitelistCheck(source, emote))
             return false;
 
-        if (!emote.Available &&
-            TryComp<SpeechComponent>(source, out var speech) &&
-            !speech.AllowedEmotes.Contains(emote.ID))
+        // Check if the emote is available for all
+        if (!emote.Available)
+        {
             return false;
+        }
 
         return true;
     }
+
 
     private void InvokeEmoteEvent(EntityUid uid, EmotePrototype proto)
     {

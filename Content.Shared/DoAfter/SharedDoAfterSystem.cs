@@ -1,11 +1,14 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Content.Shared.ActionBlocker;
+using Content.Shared.Body.Part;
 using Content.Shared.Damage;
 using Content.Shared.Hands.Components;
 using Content.Shared.Mobs;
+using Content.Shared.Standing;
 using Content.Shared.Tag;
 using Robust.Shared.GameStates;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
@@ -24,12 +27,17 @@ public abstract partial class SharedDoAfterSystem : EntitySystem
     /// </summary>
     private static readonly TimeSpan ExcessTime = TimeSpan.FromSeconds(0.5f);
 
+    private static readonly ProtoId<TagPrototype> InstantDoAftersTag = "InstantDoAfters";
+
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<DoAfterComponent, DamageChangedEvent>(OnDamage);
+        SubscribeLocalEvent<DoAfterComponent, LimbBodyRelayedEvent<DamageChangedEvent>>((u, c, a) => OnDamage(u, c, a.Args));
         SubscribeLocalEvent<DoAfterComponent, EntityUnpausedEvent>(OnUnpaused);
         SubscribeLocalEvent<DoAfterComponent, MobStateChangedEvent>(OnStateChanged);
+        SubscribeLocalEvent<DoAfterComponent, StoodEvent>((u, c, a) => OnStandingStateChanged(u, c, true));
+        SubscribeLocalEvent<DoAfterComponent, DownedEvent>((u, c, a) => OnStandingStateChanged(u, c, false));
         SubscribeLocalEvent<DoAfterComponent, ComponentGetState>(OnDoAfterGetState);
         SubscribeLocalEvent<DoAfterComponent, ComponentHandleState>(OnDoAfterHandleState);
     }
@@ -56,6 +64,28 @@ public abstract partial class SharedDoAfterSystem : EntitySystem
         {
             InternalCancel(doAfter, component);
         }
+        Dirty(uid, component);
+    }
+
+    private void OnStandingStateChanged(EntityUid uid, DoAfterComponent component, bool standing)
+    {
+        var dirty = false;
+
+        foreach (var doAfter in component.DoAfters.Values)
+        {
+            if (doAfter.Args.RequireDown == null)
+                continue;
+
+            if (doAfter.Args.RequireDown != standing)
+            {
+                InternalCancel(doAfter, component);
+                dirty = true;
+            }
+        }
+
+        if (!dirty)
+            return;
+
         Dirty(uid, component);
     }
 
@@ -220,10 +250,29 @@ public abstract partial class SharedDoAfterSystem : EntitySystem
         if (args.BreakOnMove)
             doAfter.UserPosition = Transform(args.User).Coordinates;
 
-        if (args.Target != null && args.BreakOnMove)
+        if (args.Target != null)
         {
-            var targetPosition = Transform(args.Target.Value).Coordinates;
-            doAfter.UserPosition.TryDistance(EntityManager, targetPosition, out doAfter.TargetDistance);
+            if (args.RequireDown != null)
+            {
+                if (!TryComp<StandingStateComponent>(args.Target, out var standingComp))
+                {
+                    // we may be a limb
+                    if (!TryComp<BodyPartComponent>(args.Target, out var bodyPartComp) || bodyPartComp.Body is not {} body)
+                        return false;
+
+                    if (!TryComp<StandingStateComponent>(body, out standingComp))
+                        return false;
+                }
+
+                if (standingComp.Standing == args.RequireDown)
+                    return false;
+            }
+
+            if (args.BreakOnMove)
+            {
+                var targetPosition = Transform(args.Target.Value).Coordinates;
+                doAfter.UserPosition.TryDistance(EntityManager, targetPosition, out doAfter.TargetDistance);
+            }
         }
 
         doAfter.NetUserPosition = GetNetCoordinates(doAfter.UserPosition);
@@ -250,7 +299,7 @@ public abstract partial class SharedDoAfterSystem : EntitySystem
 
         // TODO DO AFTER
         // Why does this tag exist? Just make this a bool on the component?
-        if (args.Delay <= TimeSpan.Zero || _tag.HasTag(args.User, "InstantDoAfters"))
+        if (args.Delay <= TimeSpan.Zero || _tag.HasTag(args.User, InstantDoAftersTag))
         {
             RaiseDoAfterEvents(doAfter, comp);
             // We don't store instant do-afters. This is just a lazy way of hiding them from client-side visuals.

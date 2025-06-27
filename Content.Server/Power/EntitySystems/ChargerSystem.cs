@@ -11,6 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 using Content.Shared.Storage.Components;
 using Robust.Server.Containers;
 using Content.Shared.Whitelist;
+using Content.Shared.Inventory;
 
 namespace Content.Server.Power.EntitySystems;
 
@@ -22,6 +23,7 @@ internal sealed class ChargerSystem : EntitySystem
     [Dependency] private readonly BatterySystem _battery = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
+    [Dependency] private readonly InventorySystem _inventory = default!;
 
     public override void Initialize()
     {
@@ -89,7 +91,22 @@ internal sealed class ChargerSystem : EntitySystem
 
             foreach (var contained in container.ContainedEntities)
             {
+                if (!TryComp<ApcPowerReceiverComponent>(uid, out var receiverComponent))
+                    continue;
+
+                if (!receiverComponent.Powered)
+                    continue;
+
                 TransferPower(uid, contained, charger, frameTime);
+
+                if (!_inventory.TryGetContainerSlotEnumerator(contained, out var slots, charger.Slots))
+                    continue;
+
+                while (slots.MoveNext(out var slot))
+                {
+                    if (slot.ContainedEntity != null)
+                        TransferPower(uid, slot.ContainedEntity.Value, charger, frameTime);
+                }
             }
         }
     }
@@ -223,10 +240,25 @@ internal sealed class ChargerSystem : EntitySystem
         if (container.ContainedEntities.Count == 0)
             return CellChargerStatus.Empty;
 
-        if (!SearchForBattery(container.ContainedEntities[0], out _, out var heldBattery))
-            return CellChargerStatus.Off;
+        if (!SearchForBattery(container.ContainedEntities[0], out var heldEnt, out var heldBattery))
+        {
+            if (!_inventory.TryGetContainerSlotEnumerator(container.ContainedEntities[0], out var slots, component.Slots))
+                return CellChargerStatus.Off;
 
-        if (Math.Abs(heldBattery.MaxCharge - heldBattery.CurrentCharge) < 0.01)
+            while (slots.MoveNext(out var slot))
+            {
+                if (slot.ContainedEntity == null)
+                    continue;
+
+                if (SearchForBattery(slot.ContainedEntity.Value, out heldEnt, out heldBattery))
+                    break;
+            }
+
+            if (heldEnt == null)
+                return CellChargerStatus.Off;
+        }
+
+        if (_battery.IsFull(heldEnt.Value, heldBattery))
             return CellChargerStatus.Charged;
 
         return CellChargerStatus.Charging;
@@ -234,12 +266,6 @@ internal sealed class ChargerSystem : EntitySystem
 
     private void TransferPower(EntityUid uid, EntityUid targetEntity, ChargerComponent component, float frameTime)
     {
-        if (!TryComp(uid, out ApcPowerReceiverComponent? receiverComponent))
-            return;
-
-        if (!receiverComponent.Powered)
-            return;
-
         if (_whitelistSystem.IsWhitelistFail(component.Whitelist, targetEntity))
             return;
 
@@ -247,12 +273,6 @@ internal sealed class ChargerSystem : EntitySystem
             return;
 
         _battery.SetCharge(batteryUid.Value, heldBattery.CurrentCharge + component.ChargeRate * frameTime, heldBattery);
-        // Just so the sprite won't be set to 99.99999% visibility
-        if (heldBattery.MaxCharge - heldBattery.CurrentCharge < 0.01)
-        {
-            _battery.SetCharge(batteryUid.Value, heldBattery.MaxCharge, heldBattery);
-        }
-
         UpdateStatus(uid, component);
     }
 
@@ -264,6 +284,7 @@ internal sealed class ChargerSystem : EntitySystem
             // or by checking for a power cell slot on the inserted entity
             return _powerCell.TryGetBatteryFromSlot(uid, out batteryUid, out component);
         }
+
         batteryUid = uid;
         return true;
     }
