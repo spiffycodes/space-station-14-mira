@@ -12,6 +12,7 @@ research-technology-compact-power = Compact Power
 research-technology-industrial-engineering = Industrial Engineering
 research-technology-power-generation = Power Generation
 research-technology-atmospheric-tech = Atmospherics
+research-technology-rapid-construction = Rapid Construction
 research-technology-shuttlecraft = Shuttlecraft
 research-technology-advanced-atmospherics = Advanced Atmospherics
 research-technology-advanced-tools = Advanced Tools
