@@ -127,6 +127,7 @@
   suffix: Filled, Hardsuit
   parent: LockerAtmospherics
   components:
+
   - type: EntityTableContainerFill
     containers:
       entity_storage: !type:AllSelector
@@ -156,8 +157,6 @@
     - id: GasAnalyzer
     - id: MedkitOxygenFilled
     - id: HolofanProjector
-    - id: RCD
-    - id: RCDAmmo
     - id: AirGrenade
 
 - type: entityTable
@@ -167,6 +166,7 @@
     - id: ClothingBackpackModSuitAtmosphericFilled
     - id: OxygenTankFilled
     - id: ClothingMaskBreath
+
 
 - type: entity
   id: LockerEngineerFilledHardsuit
@@ -199,8 +199,6 @@
     - id: ClothingHandsGlovesColorYellow
     - id: ClothingMaskGas
     - id: trayScanner
-    - id: RCD
-    - id: RCDAmmo
     - id: MetalFoamGrenade
 
 - type: entityTable
@@ -210,6 +208,7 @@
     - id: ClothingBackpackModSuitEngineeringFilled
     - id: OxygenTankFilled
     - id: ClothingMaskBreath
+
 
 - type: entity
   id: ClosetRadiationSuitFilled
