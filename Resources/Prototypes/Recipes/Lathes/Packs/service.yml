@@ -25,6 +25,7 @@
   - MopItem
   - Holoprojector
   - WetFloorSign
+  - WireBrush
 
 - type: latheRecipePack
   id: ServiceBoardsStatic
@@ -67,9 +68,11 @@
   - PushHorn
 
 - type: latheRecipePack
-  id: Cartridge
+  id: Hydroponics
   recipes:
   - PlantScanCartridge
+  - SyntheticSwab
+  - SwabApplicator
 
 - type: latheRecipePack
   id: ServiceBoards

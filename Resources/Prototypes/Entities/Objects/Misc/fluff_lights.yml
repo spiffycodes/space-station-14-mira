@@ -140,13 +140,13 @@
     sprite: Objects/Misc/Lights/lampint.rsi
     layers:
       - state: lamp-int
-        map: [ "enum.FlashVisuals.BaseLayer" ]
+        map: [ "enum.FlashVisualLayers.BaseLayer" ]
       - state: lamp-int-on
         shader: unshaded
         visible: false
         map: [ "light" ]
       - state: flashing
-        map: [ "enum.FlashVisuals.LightLayer" ]
+        map: [ "enum.FlashVisualLayers.LightLayer" ]
         visible: false
   - type: Item
     sprite: Objects/Misc/Lights/lampint.rsi
@@ -159,6 +159,10 @@
     energy: 0.5
     color: "#FFFFEE"
   - type: Flash
+    flashOnMelee: false
+    flashOnUse: false
+  - type: UseDelay
+    delay: 1
   - type: LimitedCharges
     maxCharges: 3
   - type: AutoRecharge
@@ -176,17 +180,17 @@
   - type: GenericVisualizer
     visuals:
       enum.FlashVisuals.Burnt:
-        enum.FlashVisuals.BaseLayer:
+        enum.FlashVisualLayers.BaseLayer:
           True: {state: burnt}
       enum.FlashVisuals.Flashing:
-        enum.FlashVisuals.LightLayer:
+        enum.FlashVisualLayers.LightLayer:
           True: {visible: true}
           False: {visible: false}
 
 - type: entity
   name: floodlight
   id: Floodlight
-  parent: BaseLamp
+  parent: [ BaseLamp, BaseRelaxedAnchoring ]
   description: A pole with powerful mounted lights on it.
   components:
   - type: Item
@@ -244,10 +248,11 @@
     materialComposition:
       Glass: 500
       Steel: 200
+
 - type: entity
   name: broken floodlight
   id: FloodlightBroken
-  parent: BaseItem
+  parent: [ BaseItem, BaseRelaxedAnchoring ]
   description: A pole with powerful mounted lights on it. It's broken.
   components:
   - type: Item

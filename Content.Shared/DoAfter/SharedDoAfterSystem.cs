@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Content.Shared.ActionBlocker;
+using Content.Shared.Body.Organ;
 using Content.Shared.Body.Part;
 using Content.Shared.Damage;
 using Content.Shared.Hands.Components;
@@ -254,18 +255,26 @@ public abstract partial class SharedDoAfterSystem : EntitySystem
         {
             if (args.RequireDown != null)
             {
-                if (!TryComp<StandingStateComponent>(args.Target, out var standingComp))
+                if (TryComp<StandingStateComponent>(args.Target, out var standingComp))
                 {
-                    // we may be a limb
-                    if (!TryComp<BodyPartComponent>(args.Target, out var bodyPartComp) || bodyPartComp.Body is not {} body)
-                        return false;
-
-                    if (!TryComp<StandingStateComponent>(body, out standingComp))
+                    if (standingComp.Standing == args.RequireDown)
                         return false;
                 }
+                else
+                {
+                    EntityUid? body = null;
 
-                if (standingComp.Standing == args.RequireDown)
-                    return false;
+                    if (TryComp<BodyPartComponent>(args.Target, out var bodyPartComp))
+                        body = bodyPartComp.Body;
+                    else if (TryComp<OrganComponent>(args.Target, out var organComp))
+                        body = organComp.Body;
+
+                    if (TryComp(body, out standingComp))
+                    {
+                        if (standingComp.Standing == args.RequireDown)
+                            return false;
+                    }
+                }
             }
 
             if (args.BreakOnMove)
@@ -284,8 +293,8 @@ public abstract partial class SharedDoAfterSystem : EntitySystem
             if (!TryComp(args.User, out HandsComponent? handsComponent))
                 return false;
 
-            doAfter.InitialHand = handsComponent.ActiveHand?.Name;
-            doAfter.InitialItem = handsComponent.ActiveHandEntity;
+            doAfter.InitialHand = handsComponent.ActiveHandId;
+            doAfter.InitialItem = _hands.GetActiveItem((args.User, handsComponent));
         }
 
         doAfter.NetInitialItem = GetNetEntity(doAfter.InitialItem);

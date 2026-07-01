@@ -1,9 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 using Content.Server.BaseAnalyzer;
-using Content.Server.Body.Components;
 using Content.Server.Medical.Components;
 using Content.Server.Temperature.Components;
-using Content.Shared.Traits.Assorted;
+using Content.Shared.Body.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Body.Systems;
 using Content.Shared.Damage;
@@ -11,6 +10,7 @@ using Content.Shared.IdentityManagement;
 using Content.Shared.Interaction;
 using Content.Shared.MedicalScanner;
 using Content.Shared.Mobs.Components;
+using Content.Shared.Traits.Assorted;
 using Robust.Server.GameObjects;
 
 namespace Content.Server.Medical;
@@ -22,7 +22,7 @@ public sealed class HealthAnalyzerSystem : BaseAnalyzerSystem<HealthAnalyzerComp
     [Dependency] private readonly SharedBodySystem _bodySystem = default!;
 
     /// <inheritdoc/>
-    public override void UpdateScannedUser(EntityUid healthAnalyzer, EntityUid target, bool scanMode)
+    public override void UpdateScannedUser(Entity<HealthAnalyzerComponent> healthAnalyzer, EntityUid target, bool scanMode)
     {
         if (!_uiSystem.HasUi(healthAnalyzer, HealthAnalyzerUiKey.Key))
             return;
@@ -50,8 +50,9 @@ public sealed class HealthAnalyzerSystem : BaseAnalyzerSystem<HealthAnalyzerComp
         if (TryComp<UnrevivableComponent>(target, out var unrevivableComp) && unrevivableComp.Analyzable)
             unrevivable = true;
 
-        _uiSystem.ServerSendUiMessage(healthAnalyzer, HealthAnalyzerUiKey.Key, new HealthAnalyzerScannedUserMessage(
+        _uiSystem.ServerSendUiMessage(healthAnalyzer.Owner, HealthAnalyzerUiKey.Key, new HealthAnalyzerScannedUserMessage(
             GetNetEntity(target),
+            healthAnalyzer.Comp.AnalyzerType,
             bodyTemperature,
             bloodAmount,
             scanMode,

@@ -69,6 +69,13 @@
   icon: { sprite: Objects/Tools/rolling_pin.rsi, state: icon }
 
 - type: tool
+  id: Brushing
+  name: tool-quality-brushing-name
+  toolName: tool-quality-brushing-tool-name
+  spawn: WireBrush
+  icon: { sprite: Objects/Specific/Janitorial/wirebrush.rsi, state: icon }
+
+- type: tool
   id: Retracting
   name: tool-quality-retracting-name
   toolName: tool-quality-retracting-tool-name
@@ -81,3 +88,10 @@
   toolName: tool-quality-clamping-tool-name
   spawn: Hemostat
   icon: { sprite: Objects/Specific/Medical/Surgery/scissors.rsi, state: hemostat }
+
+- type: tool
+  id: Cauterizing
+  name: tool-quality-cauterizing-name
+  toolName: tool-quality-cauterizing-tool-name
+  spawn: Cautery
+  icon: { sprite: Objects/Specific/Medical/Surgery/cautery.rsi, state: cautery }

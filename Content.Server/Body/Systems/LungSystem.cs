@@ -1,6 +1,5 @@
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Body.Components;
-using Content.Shared.Atmos.Rotting;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Atmos;
 using Content.Shared.Chemistry.Components;
@@ -23,7 +22,6 @@ public sealed class LungSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<LungComponent, ComponentInit>(OnComponentInit);
-        SubscribeLocalEvent<LungComponent, StartedRottingEvent>(OnRotting);
 
         SubscribeLocalEvent<BreathToolComponent, GotEquippedEvent>(OnGotEquipped);
         SubscribeLocalEvent<BreathToolComponent, GotUnequippedEvent>(OnGotUnequipped);
@@ -57,11 +55,6 @@ public sealed class LungSystem : EntitySystem
         }
     }
 
-    private void OnRotting(Entity<LungComponent> ent, ref StartedRottingEvent args)
-    {
-        ent.Comp.Broken = true;
-    }
-
     public void GasToReagent(EntityUid uid, LungComponent lung)
     {
         if (!_solutionContainerSystem.ResolveSolution(uid, lung.SolutionName, ref lung.Solution, out var solution))
@@ -71,6 +64,9 @@ public sealed class LungSystem : EntitySystem
         _solutionContainerSystem.UpdateChemicals(lung.Solution.Value);
     }
 
+    /* This should really be moved to somewhere in the atmos system and modernized,
+     so that other systems, like CondenserSystem, can use it.
+     */
     private void GasToReagent(GasMixture gas, Solution solution)
     {
         foreach (var gasId in Enum.GetValues<Gas>())

@@ -34,7 +34,7 @@
     <GuideEntityEmbed Entity="WeaponPistolCobra" Caption="Weaponry"/>
     <GuideEntityEmbed Entity="MagazineBoxLightRifle" State="icon" Caption="Ammo"/>
     <GuideEntityEmbed Entity="C4" Caption="Explosives"/>
-    <GuideEntityEmbed Entity="ClothingOuterHardsuitSyndie" Caption="Wearables"/>
+    <GuideEntityEmbed Entity="ClothingBackpackModSuitSyndicate" Caption="Wearables"/>
     <GuideEntityEmbed Entity="Stimpack" Caption="Chemicals"/>
   </Box>
   <Box>
@@ -68,17 +68,16 @@
 
   Alternatively, your objectives may require you to [italic][color=cyan]die a glorious death.[/color][/italic] [bold]Make sure you don't come back from the dead,[/bold] or else you may wake up in cuffs.
 
-  ## Appropiation
+  ## Appropriation
   More often than not, you'll have to [italic][color=cyan]steal a possession of a department head.[/color][/italic]
 
   The target may be in their office, or on their person. It may become necessary to kill whoever is carrying it, if you cannot pickpocket them.
 
-  You may be tasked with:
+  Some of the things you may be tasked with include:
   - Stealing the [color=yellow]Captain[/color]'s [bold]ID Card[/bold], [bold]antique laser pistol[/bold], [bold]jetpack[/bold], or [bold]nuclear authentication disk[/bold].
   <Box>
     <GuideEntityEmbed Entity="CaptainIDCard" Caption=""/>
     <GuideEntityEmbed Entity="WeaponAntiqueLaser" Caption=""/>
-    <GuideEntityEmbed Entity="JetpackCaptainFilled" Caption=""/>
     <GuideEntityEmbed Entity="NukeDisk" Caption=""/>
   </Box>
   - Stealing the [color=#5b97bc]Chief Medical Officer[/color]'s [bold]hypospray[/bold] or [bold]handheld crew monitor[/bold].
@@ -86,18 +85,18 @@
     <GuideEntityEmbed Entity="Hypospray" Caption=""/>
     <GuideEntityEmbed Entity="HandheldCrewMonitorEmpty" Caption=""/>
   </Box>
-  - Stealing the [color=#c96dbf]Research Director[/color]'s [bold]experimental hardsuit[/bold] or [bold]hand teleporter[/bold].
+  - Stealing the [color=#c96dbf]Research Director[/color]'s [bold]research MODsuit[/bold] or [bold]hand teleporter[/bold].
   <Box>
-    <GuideEntityEmbed Entity="ClothingOuterHardsuitRd" Caption=""/>
+    <GuideEntityEmbed Entity="ClothingBackpackModSuitResearch" Caption=""/>
     <GuideEntityEmbed Entity="HandTeleporter" Caption=""/>
   </Box>
   - Stealing the [color=#cb0000]Head of Security[/color]'s [bold]energy shotgun[/bold].
   <Box>
     <GuideEntityEmbed Entity="WeaponEnergyShotgun" Caption=""/>
   </Box>
-  - Stealing the [color=#f39f27]Chief Engineer[/color]'s [bold]advanced magboots[/bold].
+  - Stealing the [color=#f39f27]Chief Engineer[/color]'s [bold]advanced magnetic stability module[/bold].
   <Box>
-    <GuideEntityEmbed Entity="ClothingShoesBootsMagAdv" Caption=""/>
+    <GuideEntityEmbed Entity="ModSuitModuleMagbootsAdv" Caption=""/>
   </Box>
   - Stealing the [color=#b18644]Quartermaster[/color]'s [bold]requisition digi-board[/bold].
   <Box>

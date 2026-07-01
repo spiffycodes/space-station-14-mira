@@ -98,6 +98,7 @@ ui-options-vp-vertical-fit-tooltip = When enabled, the main viewport will ignore
                                      will cause the viewport to be cut off on the horizontal axis.
 ui-options-vp-low-res = Low-resolution viewport
 ui-options-parallax-low-quality = Low-quality Parallax (background)
+ui-options-ambient-occlusion = Show Ambient Occlusion
 ui-options-fps-counter = Show FPS counter
 ui-options-vp-width = Viewport width:
 ui-options-hud-layout = HUD layout:
@@ -155,6 +156,7 @@ ui-options-function-drop = Drop item
 ui-options-function-examine-entity = Examine
 ui-options-function-swap-hands = Swap hands
 ui-options-function-swap-hands-reverse = Swap hands (other direction)
+ui-options-function-damage-part-selector = Toggle damage selection UI
 ui-options-function-move-stored-item = Move stored item
 ui-options-function-rotate-stored-item = Rotate stored item
 ui-options-function-save-item-location = Save item location

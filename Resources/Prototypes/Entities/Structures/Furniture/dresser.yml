@@ -1,6 +1,6 @@
 - type: entity
   id: Dresser
-  parent: BaseStructure
+  parent: [ BaseStructure, BaseRelaxedAnchoring ]
   name: dresser
   description: Wooden dresser, can store things inside itself, ideal for underwear, and someone's kidneys?...
   components:
@@ -241,7 +241,7 @@
       - id: ClothingHeadHatAnimalHeadslime
         prob: 0.03
         orGroup: dresserthirdloot
-      - id: ClothingNeckHeadphones
+      - id: ClothingMultipleHeadphones
         prob: 0.03
         orGroup: dresserthirdloot
       - id: ClothingUnderSocksCoder

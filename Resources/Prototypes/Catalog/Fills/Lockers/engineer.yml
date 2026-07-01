@@ -156,15 +156,13 @@
     - id: GasAnalyzer
     - id: MedkitOxygenFilled
     - id: HolofanProjector
-    - id: RCD
-    - id: RCDAmmo
     - id: AirGrenade
 
 - type: entityTable
   id: FillAtmosphericsHardsuit
   table: !type:AllSelector
     children:
-    - id: ClothingOuterHardsuitAtmos
+    - id: ClothingBackpackModSuitAtmosphericFilled
     - id: OxygenTankFilled
     - id: ClothingMaskBreath
 
@@ -199,17 +197,14 @@
     - id: ClothingHandsGlovesColorYellow
     - id: ClothingMaskGas
     - id: trayScanner
-    - id: RCD
-    - id: RCDAmmo
     - id: MetalFoamGrenade
 
 - type: entityTable
   id: FillEngineerHardsuit
   table: !type:AllSelector
     children:
-    - id: ClothingOuterHardsuitEngineering
+    - id: ClothingBackpackModSuitEngineeringFilled
     - id: OxygenTankFilled
-    - id: ClothingShoesBootsMag
     - id: ClothingMaskBreath
 
 - type: entity

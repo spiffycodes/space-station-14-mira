@@ -14,6 +14,20 @@
   categories:
   - UplinkWeaponry
 
+#Upgraded Pneumatic Cannon for niche gimmicks in case the normal cannon isn't good enough. #Syndi Cannon + arrows kills this is just a gun at this point
+- type: listing
+  id: UplinkSyndicatePneumaticCannon
+  name: uplink-syndicate-pneumatic-cannon-name
+  description: uplink-syndicate-pneumatic-cannon-desc
+  productEntity: WeaponPneumaticCannonUpgradeKit
+  discountCategory: usualDiscounts
+  discountDownTo:
+    Telecrystal: 3
+  cost:
+    Telecrystal: 5
+  categories:
+  - UplinkWeaponry
+
 - type: listing
   id: UplinkRevolverPython
   name: uplink-revolver-python-name
@@ -199,6 +213,20 @@
     Telecrystal: 10
   cost:
     Telecrystal: 17
+  categories:
+  - UplinkWeaponry
+
+- type: listing
+  id: UplinkEstocBundle
+  name: uplink-estoc-bundle-name
+  description: uplink-estoc-bundle-desc
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Rifles/estoc.rsi, state: icon }
+  productEntity: ClothingBackpackDuffelSyndicateFilledRifle
+  discountCategory: veryRareDiscounts
+  discountDownTo:
+    Telecrystal: 11
+  cost:
+    Telecrystal: 18
   categories:
   - UplinkWeaponry
 
@@ -515,6 +543,29 @@
   categories:
   - UplinkAmmo
 
+# For the Bulldog
+- type: listing
+  id: UplinkMagazineShotgunPellet
+  name: uplink-magazine-bulldog-pellet-name
+  description: uplink-magazine-bulldog-pellet-desc
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/Shotgun/m12.rsi, state: pellets }
+  productEntity: MagazineShotgun
+  cost:
+    Telecrystal: 2
+  categories:
+  - UplinkAmmo
+
+- type: listing
+  id: UplinkMagazineShotgunSlug
+  name: uplink-magazine-bulldog-slug-name
+  description: uplink-magazine-bulldog-slug-desc
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/Shotgun/m12.rsi, state: slug }
+  productEntity: MagazineShotgunSlug
+  cost:
+    Telecrystal: 3
+  categories:
+  - UplinkAmmo
+
 # For the Cobra
 - type: listing
   id: UplinkMagazinePistolCaselessRifle
@@ -547,6 +598,17 @@
   productEntity: MagazineBoxLightRifle
   cost:
     Telecrystal: 1
+  categories:
+  - UplinkAmmo
+
+# For the Estoc
+- type: listing
+  id: UplinkEstocAmmo
+  name: uplink-estoc-ammo-name
+  description: uplink-estoc-ammo-desc
+  productEntity: MagazineRifle
+  cost:
+    Telecrystal: 2
   categories:
   - UplinkAmmo
 
@@ -1600,7 +1662,6 @@
   categories:
   - UplinkWearables
 
-# TODO: Revert back to normal thieving gloves when clothes dyeing is added
 - type: listing
   id: UplinkgClothingThievingGloves
   name: uplink-clothing-chameleon-thieving-gloves-name
@@ -1695,8 +1756,8 @@
   id: UplinkHardsuitSyndie
   name: uplink-hardsuit-syndie-name
   description: uplink-hardsuit-syndie-desc
-  icon: { sprite: /Textures/Clothing/OuterClothing/Hardsuits/syndicate.rsi, state: icon }
-  productEntity: ClothingBackpackDuffelSyndicateHardsuitBundle
+  icon: { sprite: Clothing/Back/ModSuits/syndicate.rsi, state: icon-sealed }
+  productEntity: ClothingBackpackModSuitSyndicateFilled
   discountCategory: veryRareDiscounts
   discountDownTo:
     Telecrystal: 4
@@ -1725,8 +1786,8 @@
   id: UplinkHardsuitSyndieElite
   name: uplink-hardsuit-syndieelite-name
   description: uplink-hardsuit-syndieelite-desc
-  icon: { sprite: /Textures/Clothing/OuterClothing/Hardsuits/syndieelite.rsi, state: icon }
-  productEntity: ClothingBackpackDuffelSyndicateEliteHardsuitBundle
+  icon: { sprite: Clothing/Back/ModSuits/elite.rsi, state: icon-sealed }
+  productEntity: ClothingBackpackModSuitEliteFilled
   cost:
     Telecrystal: 10
   categories:

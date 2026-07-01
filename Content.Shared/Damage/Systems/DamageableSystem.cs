@@ -250,7 +250,7 @@ namespace Content.Shared.Damage
 
             var parts = _body.GetBodyDamageable(uid.Value, body);
 
-            var damagePerPart = damage / parts.Count();
+            var damagePerPart = damage / parts.Count;
 
             if (TryComp<DamagePartSelectorComponent>(origin, out var damageSelectorComp))
             {
@@ -491,7 +491,7 @@ namespace Content.Shared.Damage
 
             // Has the damage actually changed?
             DamageSpecifier newDamage = new() { DamageDict = new(state.DamageDict) };
-            var delta = component.Damage - newDamage;
+            var delta = newDamage - component.Damage;
             delta.TrimZeros();
 
             if (!delta.Empty)

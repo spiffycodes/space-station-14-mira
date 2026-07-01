@@ -239,7 +239,7 @@
     event: !type:ToggleClothingEvent
 
 - type: entity
-  parent: BaseAction
+  parent: BaseMentalAction
   id: ActionCombatModeToggle
   name: "[color=red]Combat Mode[/color]"
   description: Enter combat mode
@@ -348,6 +348,7 @@
   components:
   - type: Action
     icon: { sprite: Objects/Fun/bikehorn.rsi, state: icon }
+    useDelay: 1
 
 - type: entity
   parent: BaseAction
@@ -386,6 +387,7 @@
     iconOn: { sprite: Mobs/Customization/reptilian_parts.rsi, state: tail_smooth_behind }
     itemIconStyle: NoItem
     useDelay: 1 # emote spam
+    checkCanInteract: false
 
 - type: entity
   parent: BaseAction
@@ -422,17 +424,6 @@
     icon: { sprite: Objects/Specific/Janitorial/advmop.rsi, state: advmop }
   - type: InstantAction
     event: !type:AbsorbentActionEvent
-
-- type: entity
-  parent: BaseAction
-  id: ActionDamageSelector
-  name: Limb Selector
-  description: Change where you aim.
-  components:
-  - type: Action
-    icon: { sprite: Interface/Actions/zone_sel.rsi , state: torso }
-  - type: InstantAction
-    event: !type:DamageSelectorActionEvent
 
 - type: entity
   parent: BaseAction
@@ -476,8 +467,8 @@
 - type: entity
   parent: BaseToggleAction
   id: ActionToggleRootable
-  name: action-name-toggle-rootable
-  description: action-description-toggle-rootable
+  name: Rootable
+  description: Begin or stop being rooted to the floor.
   components:
   - type: Action
     icon: Interface/Actions/rooting.png

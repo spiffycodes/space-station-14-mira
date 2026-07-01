@@ -1,5 +1,6 @@
 using Content.Server.Atmos.Components;
 using Content.Server.Fluids.EntitySystems;
+using Content.Server.Hands.Systems;
 using Content.Server.NPC.Queries;
 using Content.Server.NPC.Queries.Considerations;
 using Content.Server.NPC.Queries.Curves;
@@ -33,6 +34,8 @@ using Robust.Server.Containers;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 using System.Linq;
+using Robust.Shared.Random;
+using Content.Shared.Beam.Components;
 
 namespace Content.Server.NPC.Systems;
 
@@ -42,11 +45,13 @@ namespace Content.Server.NPC.Systems;
 public sealed class NPCUtilitySystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _proto = default!;
+    [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedBodySystem _body = default!;
     [Dependency] private readonly ContainerSystem _container = default!;
     [Dependency] private readonly DrinkSystem _drink = default!;
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly FoodSystem _food = default!;
+    [Dependency] private readonly HandsSystem _hands = default!;
     [Dependency] private readonly InventorySystem _inventory = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly NpcFactionSystem _npcFaction = default!;
@@ -192,8 +197,22 @@ public sealed class NPCUtilitySystem : EntitySystem
                     return 0f;
 
                 // no mouse don't eat the uranium-235
-                if (avoidBadFood && HasComp<BadFoodComponent>(targetUid))
-                    return 0f;
+                if (avoidBadFood && TryComp<BadFoodComponent>(targetUid, out var badFood))
+                {
+                    var cannot = EnsureComp<BadFoodCannotEatComponent>(owner);
+
+                    var protoId = Prototype(targetUid)?.ID;
+                    if (protoId != null && cannot.CannotEat.Contains(protoId))
+                        return 0f;
+
+                    if (!_random.Prob(badFood.Chance))
+                    {
+                        if (protoId != null)
+                            cannot.CannotEat.Add(protoId);
+
+                        return 0f;
+                    }
+                }
 
                 return 1f;
             }
@@ -259,8 +278,9 @@ public sealed class NPCUtilitySystem : EntitySystem
             }
             case TargetAmmoMatchesCon:
             {
-                if (!blackboard.TryGetValue(NPCBlackboard.ActiveHand, out Hand? activeHand, EntityManager) ||
-                    !TryComp<BallisticAmmoProviderComponent>(activeHand.HeldEntity, out var heldGun))
+                if (!blackboard.TryGetValue(NPCBlackboard.ActiveHand, out string? activeHand, EntityManager) ||
+                    !_hands.TryGetHeldItem(owner, activeHand, out var heldEntity) ||
+                    !TryComp<BallisticAmmoProviderComponent>(heldEntity, out var heldGun))
                 {
                     return 0f;
                 }

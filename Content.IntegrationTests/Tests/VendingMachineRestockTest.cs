@@ -20,6 +20,8 @@ namespace Content.IntegrationTests.Tests
     [TestOf(typeof(VendingMachineSystem))]
     public sealed class VendingMachineRestockTest : EntitySystem
     {
+        private static readonly ProtoId<DamageTypePrototype> TestDamageType = "Blunt";
+
         [TestPrototypes]
         private const string Prototypes = @"
 - type: entity
@@ -153,15 +155,14 @@ namespace Content.IntegrationTests.Tests
                 // purchaseable entity with a StorageFill.
                 foreach (var proto in prototypeManager.EnumeratePrototypes<CargoProductPrototype>())
                 {
-                    if (proto.Product != null && restockStores.ContainsKey(proto.Product))
+                    if (proto.ID != null && restockStores.ContainsKey(proto.ID))
                     {
-                        foreach (var entry in restockStores[proto.Product])
+                        foreach (var entry in restockStores[proto.ID])
                             restocks.Remove(entry);
 
-                        restockStores.Remove(proto.Product);
+                        restockStores.Remove(proto.ID);
                     }
                 }
-
                 Assert.Multiple(() =>
                 {
                     Assert.That(restockStores, Has.Count.EqualTo(0),
@@ -293,7 +294,7 @@ namespace Content.IntegrationTests.Tests
                     "Did not start with zero ramen.");
 
                 restock = entityManager.SpawnEntity("TestRestockExplode", coordinates);
-                var damageSpec = new DamageSpecifier(prototypeManager.Index<DamageTypePrototype>("Blunt"), 100);
+                var damageSpec = new DamageSpecifier(prototypeManager.Index(TestDamageType), 100);
                 var damageResult = damageableSystem.TryChangeDamage(restock, damageSpec);
 
 #pragma warning disable NUnit2045

@@ -79,6 +79,7 @@
   - type: CartridgeLoader
     uiKey: enum.PdaUiKey.Key
     preinstalled:
+      - ChatCartridge
       - CrewManifestCartridge
       - NotekeeperCartridge
       - NanoTaskCartridge
@@ -151,6 +152,7 @@
   components:
   - type: CartridgeLoader
     preinstalled:
+    - ChatCartridge
     - CrewManifestCartridge
     - NotekeeperCartridge
     - NanoTaskCartridge
@@ -165,6 +167,7 @@
   - type: CartridgeLoader
     uiKey: enum.PdaUiKey.Key
     preinstalled:
+      - ChatCartridge
       - CrewManifestCartridge
       - NotekeeperCartridge
       - NanoTaskCartridge
@@ -475,6 +478,13 @@
     accentVColor: "#a23e3e"
   - type: Icon
     state: pda-qm
+  - type: CartridgeLoader
+    preinstalled:
+    - CrewManifestCartridge
+    - NotekeeperCartridge
+    - NanoTaskCartridge
+    - NewsReaderCartridge
+    - AstroNavCartridge
 
 - type: entity
   parent: BasePDA
@@ -515,6 +525,7 @@
   - type: CartridgeLoader
     uiKey: enum.PdaUiKey.Key
     preinstalled:
+      - ChatCartridge
       - CrewManifestCartridge
       - NotekeeperCartridge
       - NanoTaskCartridge
@@ -733,6 +744,15 @@
     accentVColor: "#447987"
   - type: Icon
     state: pda-cmo
+  - type: CartridgeLoader
+    preinstalled:
+    - ChatCartridge
+    - CrewManifestCartridge
+    - NotekeeperCartridge
+    - NanoTaskCartridge
+    - NewsReaderCartridge
+    - WantedListCartridge
+    - AdvMedTekCartridge
 
 - type: entity
   parent: BaseMedicalPDA
@@ -864,6 +884,7 @@
     state: pda-hos
   - type: CartridgeLoader
     preinstalled:
+    - ChatCartridge
     - CrewManifestCartridge
     - NotekeeperCartridge
     - NanoTaskCartridge
@@ -918,6 +939,7 @@
     id: CentcomIDCard
     penSlot:
       startingItem: PenCentcom
+      priority: -1
       whitelist:
         tags:
         - Write
@@ -933,11 +955,12 @@
   - type: CartridgeLoader
     uiKey: enum.PdaUiKey.Key
     preinstalled:
+      - ChatCartridge
       - CrewManifestCartridge
       - NotekeeperCartridge
       - NanoTaskCartridge
       - NewsReaderCartridge
-      - MedTekCartridge
+      - AdvMedTekCartridge
       - WantedListCartridge
       - LogProbeCartridge
       - AstroNavCartridge
@@ -966,7 +989,7 @@
       - NewsReaderCartridge
       - LogProbeCartridge
       - WantedListCartridge
-      - MedTekCartridge
+      - AdvMedTekCartridge
       - AstroNavCartridge
       - PlantScanCartridge
   - type: Tag #  Ignore Chameleon tags
@@ -1085,6 +1108,7 @@
   - type: CartridgeLoader
     uiKey: enum.PdaUiKey.Key
     preinstalled:
+      - ChatCartridge
       - NotekeeperCartridge
       - NanoTaskCartridge
 
@@ -1111,11 +1135,12 @@
   - type: CartridgeLoader
     uiKey: enum.PdaUiKey.Key
     preinstalled:
+      - ChatCartridge
       - CrewManifestCartridge
       - NotekeeperCartridge
       - NanoTaskCartridge
       - NewsReaderCartridge
-      - MedTekCartridge
+      - AdvMedTekCartridge
       - WantedListCartridge
       - LogProbeCartridge
       - AstroNavCartridge
@@ -1283,6 +1308,7 @@
     state: pda-detective
   - type: CartridgeLoader
     preinstalled:
+    - ChatCartridge
     - CrewManifestCartridge
     - NotekeeperCartridge
     - NanoTaskCartridge
@@ -1311,6 +1337,7 @@
     state: pda-brigmedic
   - type: CartridgeLoader
     preinstalled:
+    - ChatCartridge
     - CrewManifestCartridge
     - NotekeeperCartridge
     - NanoTaskCartridge
@@ -1479,6 +1506,7 @@
   - type: CartridgeLoader
     uiKey: enum.PdaUiKey.Key
     preinstalled:
+      - ChatCartridge
       - NotekeeperCartridge
       - NanoTaskCartridge
       - MedTekCartridge
@@ -1537,3 +1565,14 @@
     borderColor: "#7F3300"
   - type: Icon
     state: pda-wizard
+
+- type: entity
+  parent: ClearPDA
+  id: ScurretPDA
+  description: A temporary PDA granted to scurret temps. Doesn't do much. Wawa!
+  components:
+  - type: Pda
+    id: VisitorIDCard
+  - type: Tag #  Ignore Chameleon tags
+    tags:
+    - DoorBumpOpener

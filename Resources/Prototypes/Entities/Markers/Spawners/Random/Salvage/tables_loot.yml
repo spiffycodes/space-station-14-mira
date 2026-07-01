@@ -172,6 +172,7 @@
     - id: ClothingHeadHatFancyCrown
     - id: GoldenBikeHorn
     - id: ClothingHeadHatCatEars
+    - id: GoldenPersonalAI
     - id: TreasureCoinDiamond
       amount: !type:RangeNumberSelector
         range: 2, 5
@@ -259,7 +260,7 @@
     - id: BlueprintFulton
     - id: BlueprintSeismicCharge
     - id: WeaponCrusherGlaive
-    - id: ClothingOuterHardsuitSalvage
+    - id: ClothingBackpackModSuitSalvageFilled
     - id: ChemistryBottleOmnizine
     - !type:GroupSelector
       children:

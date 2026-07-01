@@ -1,10 +1,11 @@
 using Content.Server.Body.Components;
-using Content.Shared.Atmos.Rotting;
-using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Administration.Logs;
+using Content.Shared.Body.Events;
 using Content.Shared.Body.Organ;
+using Content.Shared.Body.Systems;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Components.SolutionManager;
+using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Database;
 using Content.Shared.EntityEffects;
@@ -18,14 +19,14 @@ using Robust.Shared.Timing;
 
 namespace Content.Server.Body.Systems
 {
-    public sealed class MetabolizerSystem : EntitySystem
+    /// <inheritdoc/>
+    public sealed class MetabolizerSystem : SharedMetabolizerSystem
     {
         [Dependency] private readonly IGameTiming _gameTiming = default!;
         [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
         [Dependency] private readonly IRobustRandom _random = default!;
         [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
         [Dependency] private readonly MobStateSystem _mobStateSystem = default!;
-        [Dependency] private readonly SharedRottingSystem _rotting = default!;
         [Dependency] private readonly SharedSolutionContainerSystem _solutionContainerSystem = default!;
 
         private EntityQuery<OrganComponent> _organQuery;
@@ -43,15 +44,11 @@ namespace Content.Server.Body.Systems
             SubscribeLocalEvent<MetabolizerComponent, EntityUnpausedEvent>(OnUnpaused);
 
             SubscribeLocalEvent<MetabolizerComponent, ApplyMetabolicMultiplierEvent>(OnApplyMetabolicMultiplier);
-
-            SubscribeLocalEvent<MetabolizerRotComponent, RotUpdateEvent>(OnRotUpdate);
-            SubscribeLocalEvent<MetabolizerRotComponent, StartedRottingEvent>(OnStartedRotting);
-            SubscribeLocalEvent<MetabolizerRotComponent, GetMetabolizingUpdateDelay>(OnRotUpdateDelay);
         }
 
         private void OnMapInit(Entity<MetabolizerComponent> ent, ref MapInitEvent args)
         {
-            ent.Comp.NextUpdate = _gameTiming.CurTime + ent.Comp.UpdateInterval;
+            ent.Comp.NextUpdate = _gameTiming.CurTime + ent.Comp.AdjustedUpdateInterval;
         }
 
         private void OnUnpaused(Entity<MetabolizerComponent> ent, ref EntityUnpausedEvent args)
@@ -71,46 +68,9 @@ namespace Content.Server.Body.Systems
             }
         }
 
-        private void OnApplyMetabolicMultiplier(
-            Entity<MetabolizerComponent> ent,
-            ref ApplyMetabolicMultiplierEvent args)
+        private void OnApplyMetabolicMultiplier(Entity<MetabolizerComponent> ent, ref ApplyMetabolicMultiplierEvent args)
         {
-            // TODO REFACTOR THIS
-            // This will slowly drift over time due to floating point errors.
-            // Instead, raise an event with the base rates and allow modifiers to get applied to it.
-            if (args.Apply)
-            {
-                ent.Comp.UpdateInterval *= args.Multiplier;
-                return;
-            }
-
-            ent.Comp.UpdateInterval /= args.Multiplier;
-        }
-
-        private void OnRotUpdate(Entity<MetabolizerRotComponent> ent, ref RotUpdateEvent args)
-        {
-            ent.Comp.CurrentMutliplier = ent.Comp.HealthyMultiplier + args.RotProgress * (ent.Comp.DamagedMultiplier - ent.Comp.HealthyMultiplier);
-
-            if (!ent.Comp.DisabledOnRot)
-                return;
-
-            ent.Comp.Enabled = args.RotProgress < 1f;
-        }
-
-        private void OnStartedRotting(Entity<MetabolizerRotComponent> ent, ref StartedRottingEvent args)
-        {
-            if (!ent.Comp.DisabledOnRot)
-                return;
-
-            ent.Comp.Enabled = false;
-        }
-
-        private void OnRotUpdateDelay(Entity<MetabolizerRotComponent> ent, ref GetMetabolizingUpdateDelay args)
-        {
-            args.Delay *= ent.Comp.CurrentMutliplier;
-
-            if (!ent.Comp.Enabled)
-                args.Cancel();
+            ent.Comp.UpdateIntervalMultiplier = args.Multiplier;
         }
 
         public override void Update(float frameTime)
@@ -134,7 +94,7 @@ namespace Content.Server.Body.Systems
                 var ev = new GetMetabolizingUpdateDelay(metab.UpdateInterval);
                 RaiseLocalEvent(uid, ev);
 
-                metab.NextUpdate += ev.Delay;
+                metab.NextUpdate += ev.TotalDelay;
 
                 if (!ev.Cancelled)
                     TryMetabolize((uid, metab));
@@ -147,9 +107,6 @@ namespace Content.Server.Body.Systems
 
             // First step is get the solution we actually care about
             var solutionName = ent.Comp1.SolutionName;
-            Solution? solution = null;
-            Entity<SolutionComponent>? soln = default!;
-            EntityUid? solutionEntityUid = null;
 
             if (ent.Comp1.SolutionOnBody)
             {
@@ -158,8 +115,10 @@ namespace Content.Server.Body.Systems
                     if (!_solutionQuery.Resolve(body, ref ent.Comp3, logMissing: false))
                         return;
 
-                    _solutionContainerSystem.TryGetSolution((body, ent.Comp3), solutionName, out soln, out solution);
-                    solutionEntityUid = body;
+                    if (!_solutionContainerSystem.TryGetSolution((body, ent.Comp3), solutionName, out var soln, out var solution))
+                        return;
+
+                    Metabolize(ent, solution, soln.Value, body);
                 }
             }
             else
@@ -167,19 +126,16 @@ namespace Content.Server.Body.Systems
                 if (!_solutionQuery.Resolve(ent, ref ent.Comp3, logMissing: false))
                     return;
 
-                _solutionContainerSystem.TryGetSolution((ent, ent), solutionName, out soln, out solution);
-                solutionEntityUid = ent;
-            }
+                if (!_solutionContainerSystem.TryGetSolution((ent, ent), solutionName, out var soln, out var solution))
+                    return;
 
-            if (solutionEntityUid is null
-                || soln is null
-                || solution is null
-                || solution.Contents.Count == 0)
-            {
-                return;
+                Metabolize(ent, solution, soln.Value, ent.Owner);
             }
+        }
 
-            if (_rotting.IsRotten(ent))
+        private void Metabolize(Entity<MetabolizerComponent, OrganComponent?> ent, Solution solution, Entity<SolutionComponent> soln, EntityUid? solutionEntityUid)
+        {
+            if (solutionEntityUid is null || solution.Contents.Count == 0)
                 return;
 
             // randomize the reagent list so we don't have any weird quirks
@@ -187,7 +143,7 @@ namespace Content.Server.Body.Systems
             var list = solution.Contents.ToArray();
             _random.Shuffle(list);
 
-            int reagents = 0;
+            var reagents = 0;
             foreach (var (reagent, quantity) in list)
             {
                 if (!_prototypeManager.TryIndex<ReagentPrototype>(reagent.Prototype, out var proto))
@@ -197,9 +153,7 @@ namespace Content.Server.Body.Systems
                 if (proto.Metabolisms is null)
                 {
                     if (ent.Comp1.RemoveEmpty)
-                    {
                         solution.RemoveReagent(reagent, FixedPoint2.New(1));
-                    }
 
                     continue;
                 }
@@ -207,7 +161,6 @@ namespace Content.Server.Body.Systems
                 // we're done here entirely if this is true
                 if (reagents >= ent.Comp1.MaxReagentsProcessable)
                     return;
-
 
                 // loop over all our groups and see which ones apply
                 if (ent.Comp1.MetabolismGroups is null)
@@ -223,7 +176,7 @@ namespace Content.Server.Body.Systems
                     // Remove $rate, as long as there's enough reagent there to actually remove that much
                     mostToRemove = FixedPoint2.Clamp(rate, 0, quantity);
 
-                    float scale = (float) mostToRemove / (float) rate;
+                    var scale = (float)mostToRemove / (float)rate;
 
                     // if it's possible for them to be dead, and they are,
                     // then we shouldn't process any effects, but should probably
@@ -269,42 +222,16 @@ namespace Content.Server.Body.Systems
                 }
             }
 
-            _solutionContainerSystem.UpdateChemicals(soln.Value);
+            _solutionContainerSystem.UpdateChemicals(soln);
         }
     }
 
-    // TODO REFACTOR THIS
-    // This will cause rates to slowly drift over time due to floating point errors.
-    // Instead, the system that raised this should trigger an update and subscribe to get-modifier events.
-    [ByRefEvent]
-    public readonly record struct ApplyMetabolicMultiplierEvent(
-        EntityUid Uid,
-        float Multiplier,
-        bool Apply)
+    public sealed partial class GetMetabolizingUpdateDelay(TimeSpan delay) : CancellableEntityEventArgs
     {
-        /// <summary>
-        /// The entity whose metabolism is being modified.
-        /// </summary>
-        public readonly EntityUid Uid = Uid;
+        public readonly TimeSpan StartingDelay = delay;
 
-        /// <summary>
-        /// What the metabolism's update rate will be multiplied by.
-        /// </summary>
-        public readonly float Multiplier = Multiplier;
+        public TimeSpan AdditionalDelay;
 
-        /// <summary>
-        /// If true, apply the multiplier. If false, revert it.
-        /// </summary>
-        public readonly bool Apply = Apply;
-    }
-
-    public sealed partial class GetMetabolizingUpdateDelay : CancellableEntityEventArgs
-    {
-        public TimeSpan Delay;
-
-        public GetMetabolizingUpdateDelay(TimeSpan delay)
-        {
-            Delay = delay;
-        }
+        public TimeSpan TotalDelay => StartingDelay + AdditionalDelay;
     }
 }

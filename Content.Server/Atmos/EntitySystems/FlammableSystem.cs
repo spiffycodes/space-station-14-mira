@@ -72,6 +72,7 @@ namespace Content.Server.Atmos.EntitySystems
             SubscribeLocalEvent<FlammableComponent, InteractUsingEvent>(OnInteractUsing);
             SubscribeLocalEvent<FlammableComponent, StartCollideEvent>(OnCollide);
             SubscribeLocalEvent<FlammableComponent, IsHotEvent>(OnIsHot);
+            SubscribeLocalEvent<FlammableComponent, AtmosExposedUpdateEvent>(OnAtmosExposed);
             SubscribeLocalEvent<FlammableComponent, TileFireEvent>(OnTileFire);
             SubscribeLocalEvent<FlammableComponent, RejuvenateEvent>(OnRejuvenate);
             SubscribeLocalEvent<FlammableComponent, ResistFireAlertEvent>(OnResistFireAlert);
@@ -121,7 +122,7 @@ namespace Content.Server.Atmos.EntitySystems
 
             var otherEnt = args.OtherEntity;
 
-            if (!EntityManager.TryGetComponent(otherEnt, out FlammableComponent? flammable))
+            if (!TryComp(otherEnt, out FlammableComponent? flammable))
                 return;
 
             //Only ignite when the colliding fixture is projectile or ignition.
@@ -251,6 +252,19 @@ namespace Content.Server.Atmos.EntitySystems
         private void OnTileFire(Entity<FlammableComponent> ent, ref TileFireEvent args)
         {
             var tempDelta = args.Temperature - ent.Comp.MinIgnitionTemperature;
+
+            _fireEvents.TryGetValue(ent, out var maxTemp);
+
+            if (tempDelta > maxTemp)
+                _fireEvents[ent] = tempDelta;
+        }
+
+        private void OnAtmosExposed(Entity<FlammableComponent> ent, ref AtmosExposedUpdateEvent args)
+        {
+            if (!ent.Comp.IgniteFromHeat)
+                return;
+
+            var tempDelta = args.GasMixture.Temperature - ent.Comp.MinIgnitionTemperature;
 
             _fireEvents.TryGetValue(ent, out var maxTemp);
 

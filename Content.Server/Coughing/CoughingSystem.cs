@@ -14,12 +14,12 @@ public sealed partial class CoughingSystem : SharedCoughingSystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<CoughOnRespireComponent, InhaledEvent>(OnInhale);
+        SubscribeLocalEvent<CoughOnRespireComponent, InhaledGasEvent>(OnInhale);
     }
 
-    private void OnInhale(Entity<CoughOnRespireComponent> ent, ref InhaledEvent args)
+    private void OnInhale(Entity<CoughOnRespireComponent> ent, ref InhaledGasEvent args)
     {
-        var ev = new CoughGetChangceEvent(ent.Comp.Chance);
+        var ev = new CoughGetChanceEvent();
 
         RaiseLocalEvent(ent, ev);
 

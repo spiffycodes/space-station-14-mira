@@ -1,8 +1,8 @@
 using Content.Server.Atmos.EntitySystems;
-using Content.Server.Body.Components;
 using Content.Server.Temperature.Components;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Rotting;
+using Content.Shared.Body.Events;
 using Content.Shared.Damage;
 using Robust.Server.Containers;
 using Robust.Shared.Physics.Components;
@@ -81,11 +81,11 @@ public sealed class RottingSystem : SharedRottingSystem
                 Dirty(uid, perishable);
             }
 
-            var updateEv = new RotUpdateEvent(stage, GetRotProgress(uid, perishable));
-            RaiseLocalEvent(uid, updateEv);
-
             if (IsRotten(uid) || !IsRotProgressing(uid, perishable))
                 continue;
+
+            var updateEv = new RotUpdateEvent(stage, GetRotProgress(uid, perishable));
+            RaiseLocalEvent(uid, updateEv);
 
             perishable.RotAccumulator += perishable.PerishUpdateRate * GetRotRate(uid);
             if (perishable.RotAccumulator >= perishable.RotAfter)

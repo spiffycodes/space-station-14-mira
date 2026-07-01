@@ -28,7 +28,13 @@
   id: AnomalyHost
 
 - type: Tag
+  id: AnomalyCore
+
+- type: Tag
   id: AppraisalTool
+
+- type: Tag
+  id: Apron
 
 - type: Tag
   id: Arrow
@@ -38,6 +44,9 @@
 
 - type: Tag
   id: ATVKeys
+
+- type: Tag
+  id: Backpack
 
 - type: Tag
   id: Balloon
@@ -218,7 +227,6 @@
 
 - type: Tag
   id: CanPilot
-
 
 - type: Tag
   id: CaptainSabre
@@ -449,6 +457,9 @@
 
 - type: Tag
   id: DiscreteHealthAnalyzer #So construction recipes don't eat medical PDAs
+
+- type: Tag
+  id: Directional # Marks directional structures that can be anchored inside of by appropriate entities.
 
 - type: Tag
   id: DNASolutionScannable
@@ -963,6 +974,9 @@
   id: ModSuitModule
 
 - type: Tag
+  id: ModSuitModuleInsulation
+
+- type: Tag
   id: ModSuitPlatingStandard
 
 - type: Tag
@@ -1072,6 +1086,9 @@
 
 - type: Tag
   id: PercussionInstrument
+
+- type: Tag
+  id: PetOnly
 
 - type: Tag
   id: PetWearable
@@ -1233,6 +1250,9 @@
 - type: Tag
   id: Screwdriver
 
+- type: Tag # Flags items that scurrets can wear in their back and outerwear slots.
+  id: ScurretWearable
+
 - type: Tag
   id: SecBeltEquip
 
@@ -1369,6 +1389,12 @@
   id: SurveillanceCameraMonitorCircuitboard
 
 - type: Tag
+  id: Swab
+
+- type: Tag
+  id: SwabApplicator
+
+- type: Tag
   id: Syndicate
 
 - type: Tag
@@ -1394,6 +1420,9 @@
 
 - type: Tag
   id: Taser
+
+- type: Tag
+  id: TeleportImmune #won't be teleported by a teleframe
 
 - type: Tag
   id: TimerBrigElectronics
@@ -1447,6 +1476,9 @@
   id: UraniumGlassShard
 
 - type: Tag
+  id: UtilityBelt
+
+- type: Tag
   id: Vegetable
 
 - type: Tag
@@ -1480,6 +1512,12 @@
   id: WeaponPistolCHIMPUpgradeKit
 
 - type: Tag
+  id: WeaponPneumaticCannon 
+
+- type: Tag
+  id: WeaponPneumaticCannonUpgradeKit #Should be in alphabetical order
+
+- type: Tag
   id: WeaponShotgunKammerer
 
 - type: Tag
@@ -1505,6 +1543,9 @@
 
 - type: Tag
   id: Wine
+
+- type: Tag
+  id: WireBrush
 
 - type: Tag
   id: Wirecutter
